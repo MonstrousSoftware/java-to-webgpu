@@ -1,0 +1,42 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group = 'com.monstrous'
+version = '1.0'
+
+repositories {
+    mavenCentral()
+}
+
+application {
+    mainClass = 'com.monstrous.Main'
+}
+
+run {
+    systemProperty "java.library.path", rootProject.file('native-libs').path        // where to find the DLL files
+    setIgnoreExitValue(true)
+}
+
+project.ext.lwjglVersion = "3.3.4"
+project.ext.lwjglNatives = "natives-windows"
+
+dependencies {
+
+    implementation project(':java-to-webgpu')
+    implementation 'com.github.jnr:jnr-ffi:2.2.17'
+}
+
+
+
+dependencies {
+    implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
+
+    implementation "org.lwjgl:lwjgl"
+    implementation "org.lwjgl:lwjgl-glfw"
+
+    runtimeOnly "org.lwjgl:lwjgl::$lwjglNatives"
+
+    //implementation project(':wrapper')
+}

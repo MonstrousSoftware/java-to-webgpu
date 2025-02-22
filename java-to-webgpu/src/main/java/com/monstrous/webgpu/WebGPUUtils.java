@@ -1,10 +1,8 @@
 package com.monstrous.webgpu;
 
-import jnr.ffi.LibraryLoader;
 import jnr.ffi.Pointer;
-import jnr.ffi.Runtime;
 
-public interface WebGPU { // A representation of the C interface in Java
+public interface WebGPUUtils { // A representation of the C interface in Java
 
     final static long WGPU_DEPTH_SLICE_UNDEFINED = -1L;
 

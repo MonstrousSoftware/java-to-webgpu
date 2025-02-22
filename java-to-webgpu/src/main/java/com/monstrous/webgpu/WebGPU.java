@@ -1,115 +1,110 @@
-package com.monstrous.wgpu;
+package com.monstrous.webgpu;
 
+import jnr.ffi.LibraryLoader;
 import jnr.ffi.Pointer;
+import jnr.ffi.Runtime;
 
 public interface WebGPU { // A representation of the C interface in Java
 
-    final static long WGPU_DEPTH_SLICE_UNDEFINED = -1L;
 
-    Pointer gdx2d_load (Pointer buffer, int len);
-    void gdx2d_free(Pointer pixmapInfo);
+    Pointer wgpuCreateInstance();
+    void wgpuInstanceRelease(Pointer instance);
 
-    Pointer glfwGetWGPUSurface(Pointer instance, long HWND);
-
-
-    Pointer CreateInstance();
-    void InstanceRelease(Pointer instance);
-    /*
-    Pointer RequestAdapterSync(Pointer instance, WGPURequestAdapterOptions options);
+    Pointer wgpuRequestAdapterSync(Pointer instance, WGPURequestAdapterOptions options);
 
 
-    void AdapterRelease(Pointer adapter);
-    boolean    AdapterGetLimits(Pointer adapter, WGPUSupportedLimits limits);
-    void AdapterGetProperties(Pointer adapter, WGPUAdapterProperties properties);
+    void wgpuAdapterRelease(Pointer adapter);
+    boolean    wgpuAdapterGetLimits(Pointer adapter, WGPUSupportedLimits limits);
+    void wgpuAdapterGetProperties(Pointer adapter, WGPUAdapterProperties properties);
 
-    Pointer RequestDeviceSync(Pointer adapter, WGPUDeviceDescriptor descriptor);
-    void DeviceRelease(Pointer device);
-    void DeviceTick(Pointer device);    // DAWN
-    //WGPUStatus DeviceGetFeatures(Pointer device, WGPUSupportedFeatures features);
-    boolean DeviceGetLimits(Pointer device, WGPUSupportedLimits limits);
-    void DeviceSetUncapturedErrorCallback(Pointer device, WGPUErrorCallback callback, Pointer userdata);
+    Pointer wgpuRequestDeviceSync(Pointer adapter, WGPUDeviceDescriptor descriptor);
+    void wgpuDeviceRelease(Pointer device);
+    void wgpuDeviceTick(Pointer device);    // DAWN
+    //WGPUStatus wgpuDeviceGetFeatures(Pointer device, WGPUSupportedFeatures features);
+    boolean wgpuDeviceGetLimits(Pointer device, WGPUSupportedLimits limits);
+    void wgpuDeviceSetUncapturedErrorCallback(Pointer device, WGPUErrorCallback callback, Pointer userdata);
 
-    Pointer DeviceGetQueue(Pointer device);
-    void QueueRelease(Pointer queue);
-    void QueueSubmit(Pointer queue, int count, Pointer commandBuffer);       // array of command buffer
-    void QueueOnSubmittedWorkDone(Pointer queue, WGPUQueueWorkDoneCallback callback, Pointer userdata);
+    Pointer wgpuDeviceGetQueue(Pointer device);
+    void wgpuQueueRelease(Pointer queue);
+    void wgpuQueueSubmit(Pointer queue, int count, Pointer commandBuffer);       // array of command buffer
+    void wgpuQueueOnSubmittedWorkDone(Pointer queue, WGPUQueueWorkDoneCallback callback, Pointer userdata);
 
-    Pointer DeviceCreateCommandEncoder(Pointer device, WGPUCommandEncoderDescriptor encoderDesc);
-    void CommandEncoderRelease(Pointer commandEncoder);
-    Pointer CommandEncoderFinish(Pointer encoder, WGPUCommandBufferDescriptor cmdBufferDescriptor);
-    void CommandEncoderInsertDebugMarker(Pointer encoder, String marker);
-    Pointer CommandEncoderBeginRenderPass(Pointer encoder, WGPURenderPassDescriptor renderPassDescriptor);
+    Pointer wgpuDeviceCreateCommandEncoder(Pointer device, WGPUCommandEncoderDescriptor encoderDesc);
+    void wgpuCommandEncoderRelease(Pointer commandEncoder);
+    Pointer wgpuCommandEncoderFinish(Pointer encoder, WGPUCommandBufferDescriptor cmdBufferDescriptor);
+    void wgpuCommandEncoderInsertDebugMarker(Pointer encoder, String marker);
+    Pointer wgpuCommandEncoderBeginRenderPass(Pointer encoder, WGPURenderPassDescriptor renderPassDescriptor);
 
-    void RenderPassEncoderEnd(Pointer renderPass);
-    void RenderPassEncoderRelease(Pointer renderPass);
-    void RenderPassEncoderSetPipeline(Pointer renderPass, Pointer pipeline);
-    void RenderPassEncoderDraw(Pointer renderPass, int numVertices, int numInstances, int firstVertex, int firstInstance);
-    void RenderPassEncoderSetVertexBuffer(Pointer renderPass, int slot, Pointer vertexBuffer, long offset, long size);
-    void RenderPassEncoderSetIndexBuffer(Pointer renderPass, Pointer indexBuffer, WGPUIndexFormat wgpuIndexFormat, int offset, long size);
-    void RenderPassEncoderDrawIndexed(Pointer renderPass, int indexCount, int numInstances, int firstIndex, int baseVertex, int firstInstance);
-    void RenderPassEncoderSetScissorRect(Pointer renderPass, int x, int y, int width, int height);
-    void RenderPassEncoderSetViewport(Pointer renderPass, float x, float y, float width, float height, float minDepth, float maxDepth);
-    void RenderPassEncoderSetBindGroup(Pointer renderPass, int groupIndex, Pointer bindGroup, int dynamicOffsetCount, Pointer dynamicOffsets);
-
-
-    void CommandBufferRelease(Pointer commandBuffer);
+    void wgpuRenderPassEncoderEnd(Pointer renderPass);
+    void wgpuRenderPassEncoderRelease(Pointer renderPass);
+    void wgpuRenderPassEncoderSetPipeline(Pointer renderPass, Pointer pipeline);
+    void wgpuRenderPassEncoderDraw(Pointer renderPass, int numVertices, int numInstances, int firstVertex, int firstInstance);
+    void wgpuRenderPassEncoderSetVertexBuffer(Pointer renderPass, int slot, Pointer vertexBuffer, long offset, long size);
+    void wgpuRenderPassEncoderSetIndexBuffer(Pointer renderPass, Pointer indexBuffer, WGPUIndexFormat wgpuIndexFormat, int offset, long size);
+    void wgpuRenderPassEncoderDrawIndexed(Pointer renderPass, int indexCount, int numInstances, int firstIndex, int baseVertex, int firstInstance);
+    void wgpuRenderPassEncoderSetScissorRect(Pointer renderPass, int x, int y, int width, int height);
+    void wgpuRenderPassEncoderSetViewport(Pointer renderPass, float x, float y, float width, float height, float minDepth, float maxDepth);
+    void wgpuRenderPassEncoderSetBindGroup(Pointer renderPass, int groupIndex, Pointer bindGroup, int dynamicOffsetCount, Pointer dynamicOffsets);
 
 
-    void SurfaceRelease(Pointer surface);
-    void SurfaceConfigure(Pointer surface, WGPUSurfaceConfiguration config);
-    void SurfaceUnconfigure(Pointer surface);
-    void SurfacePresent(Pointer surface);
-    WGPUTextureFormat SurfaceGetPreferredFormat(Pointer surface, Pointer adapter);
-    int SurfaceGetCapabilities(Pointer surface, Pointer adapter, WGPUSurfaceCapabilities caps);
+    void wgpuCommandBufferRelease(Pointer commandBuffer);
 
-    void SurfaceGetCurrentTexture(Pointer surface, WGPUSurfaceTexture texture);
+
+    void wgpuSurfaceRelease(Pointer surface);
+    void wgpuSurfaceConfigure(Pointer surface, WGPUSurfaceConfiguration config);
+    void wgpuSurfaceUnconfigure(Pointer surface);
+    void wgpuSurfacePresent(Pointer surface);
+    WGPUTextureFormat wgpuSurfaceGetPreferredFormat(Pointer surface, Pointer adapter);
+    int wgpuSurfaceGetCapabilities(Pointer surface, Pointer adapter, WGPUSurfaceCapabilities caps);
+
+    void wgpuSurfaceGetCurrentTexture(Pointer surface, WGPUSurfaceTexture texture);
 
 
 
-    Pointer DeviceCreateRenderPipeline(Pointer device, WGPURenderPipelineDescriptor pipelineDesc);
-    void RenderPipelineRelease(Pointer pipeline);
+    Pointer wgpuDeviceCreateRenderPipeline(Pointer device, WGPURenderPipelineDescriptor pipelineDesc);
+    void wgpuRenderPipelineRelease(Pointer pipeline);
 
-    Pointer DeviceCreateShaderModule(Pointer device, WGPUShaderModuleDescriptor shaderDesc);
-    void ShaderModuleRelease(Pointer shaderModule);
+    Pointer wgpuDeviceCreateShaderModule(Pointer device, WGPUShaderModuleDescriptor shaderDesc);
+    void wgpuShaderModuleRelease(Pointer shaderModule);
 
-    Pointer DeviceCreateBuffer(Pointer device, WGPUBufferDescriptor bufferDesc);
-    void BufferRelease(Pointer buffer);
-    void BufferDestroy(Pointer buffer);
-    void BufferUnmap(Pointer buffer1);
-    long BufferGetSize(Pointer vertexBuffer);
+    Pointer wgpuDeviceCreateBuffer(Pointer device, WGPUBufferDescriptor bufferDesc);
+    void wgpuBufferRelease(Pointer buffer);
+    void wgpuBufferDestroy(Pointer buffer);
+    void wgpuBufferUnmap(Pointer buffer1);
+    long wgpuBufferGetSize(Pointer vertexBuffer);
 
-    void QueueWriteBuffer(Pointer queue, Pointer buffer, int dynamicOffset, Pointer data, int length);
+    void wgpuQueueWriteBuffer(Pointer queue, Pointer buffer, int dynamicOffset, Pointer data, int length);
 
-    void CommandEncoderCopyBufferToBuffer(Pointer encoder, Pointer buffer1, int i, Pointer buffer2, int i1, int i2);
-    void BufferMapAsync(Pointer buffer2, WGPUMapMode wgpuMapMode, int offset, int size, WGPUBufferMapCallback onBuffer2Mapped, Pointer userData);
+    void wgpuCommandEncoderCopyBufferToBuffer(Pointer encoder, Pointer buffer1, int i, Pointer buffer2, int i1, int i2);
+    void wgpuBufferMapAsync(Pointer buffer2, WGPUMapMode wgpuMapMode, int offset, int size, WGPUBufferMapCallback onBuffer2Mapped, Pointer userData);
 
-    Pointer BufferGetConstMappedRange(Pointer buffer1, int offset, int size);       // todo use long for size_t?
-
-
-    Pointer DeviceCreateBindGroup(Pointer device, WGPUBindGroupDescriptor bindGroupDesc);
-    void BindGroupRelease(Pointer bindGroup);
-
-    Pointer DeviceCreateBindGroupLayout(Pointer device, WGPUBindGroupLayoutDescriptor bindGroupLayoutDesc);
-    void BindGroupLayoutRelease(Pointer bindGroupLayout);
-
-    Pointer DeviceCreatePipelineLayout(Pointer device, WGPUPipelineLayoutDescriptor layoutDesc);
-    void PipelineLayoutRelease(Pointer layout);
+    Pointer wgpuBufferGetConstMappedRange(Pointer buffer1, int offset, int size);       // todo use long for size_t?
 
 
-    Pointer DeviceCreateTexture(Pointer device, WGPUTextureDescriptor depthTextureDesc);
-    void TextureDestroy(Pointer depthTexture);
-    void TextureRelease(Pointer depthTexture);
-    WGPUTextureFormat TextureGetFormat(Pointer Texture);
+    Pointer wgpuDeviceCreateBindGroup(Pointer device, WGPUBindGroupDescriptor bindGroupDesc);
+    void wgpuBindGroupRelease(Pointer bindGroup);
 
-    Pointer TextureCreateView(Pointer Texture, WGPUTextureViewDescriptor viewDescriptor);
-    void TextureViewRelease(Pointer view);
+    Pointer wgpuDeviceCreateBindGroupLayout(Pointer device, WGPUBindGroupLayoutDescriptor bindGroupLayoutDesc);
+    void wgpuBindGroupLayoutRelease(Pointer bindGroupLayout);
 
-    void QueueWriteTexture(Pointer queue, WGPUImageCopyTexture destination, Pointer pixelPtr, int i, WGPUTextureDataLayout source, WGPUExtent3D size);
+    Pointer wgpuDeviceCreatePipelineLayout(Pointer device, WGPUPipelineLayoutDescriptor layoutDesc);
+    void wgpuPipelineLayoutRelease(Pointer layout);
 
-    Pointer DeviceCreateSampler(Pointer device, WGPUSamplerDescriptor samplerDesc);
 
-    Pointer CreateQuerySet(Pointer device, WGPUQuerySetDescriptor queryDesc);
+    Pointer wgpuDeviceCreateTexture(Pointer device, WGPUTextureDescriptor depthTextureDesc);
+    void wgpuTextureDestroy(Pointer depthTexture);
+    void wgpuTextureRelease(Pointer depthTexture);
+    WGPUTextureFormat wgpuTextureGetFormat(Pointer Texture);
 
-    void CommandEncoderResolveQuerySet(Pointer commandEncoder, Pointer querySet, int firstQuery, int queryCount, Pointer destination, long destinationOffset);
-*/
+    Pointer wgpuTextureCreateView(Pointer Texture, WGPUTextureViewDescriptor viewDescriptor);
+    void wgpuTextureViewRelease(Pointer view);
+
+    void wgpuQueueWriteTexture(Pointer queue, WGPUImageCopyTexture destination, Pointer pixelPtr, int i, WGPUTextureDataLayout source, WGPUExtent3D size);
+
+    Pointer wgpuDeviceCreateSampler(Pointer device, WGPUSamplerDescriptor samplerDesc);
+
+    Pointer wgpuCreateQuerySet(Pointer device, WGPUQuerySetDescriptor queryDesc);
+
+    void wgpuCommandEncoderResolveQuerySet(Pointer commandEncoder, Pointer querySet, int firstQuery, int queryCount, Pointer destination, long destinationOffset);
+
 }

@@ -1,2 +1,4 @@
 rootProject.name = "Java-to-WebGPU"
+include 'demo'
+include 'java-to-webgpu'
 

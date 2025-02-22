@@ -1,0 +1,14 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.monstrous'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.github.jnr:jnr-ffi:2.2.17'
+}

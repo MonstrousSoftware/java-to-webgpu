@@ -17,7 +17,7 @@ public class HelloTriangle {
     private WGPUBackendType backend = WGPUBackendType.D3D12;        // or Vulkan, etc.
     private boolean vsyncEnabled = true;
 
-    private WebGPUUtils webGPU;
+    private WebGPU webGPU;
     private Pointer surface;
     private WGPUTextureFormat surfaceFormat;
     private Pointer device;
@@ -38,7 +38,7 @@ public class HelloTriangle {
 
             renderFrame();
 
-            webGPU.DeviceTick(device);
+            webGPU.wgpuDeviceTick(device);
 
             // Poll for window events.
             winApp.pollEvents();
@@ -61,37 +61,37 @@ public class HelloTriangle {
 
         render(renderPass); // do some rendering in this render pass
 
-        webGPU.RenderPassEncoderEnd(renderPass);
-        webGPU.RenderPassEncoderRelease(renderPass);
+        webGPU.wgpuRenderPassEncoderEnd(renderPass);
+        webGPU.wgpuRenderPassEncoderRelease(renderPass);
 
         finishEncoder(commandEncoder);
 
         // At the end of the frame
-        webGPU.TextureViewRelease(targetView);
-        webGPU.SurfacePresent(surface);
+        webGPU.wgpuTextureViewRelease(targetView);
+        webGPU.wgpuSurfacePresent(surface);
     }
 
     private void render(Pointer renderPass){
         // Select which render pipeline to use
-        webGPU.RenderPassEncoderSetPipeline(renderPass, pipeline);
+        webGPU.wgpuRenderPassEncoderSetPipeline(renderPass, pipeline);
 
         // Draw 1 instance of a 3-vertices shape
-        webGPU.RenderPassEncoderDraw(renderPass, 3, 1, 0, 0);
+        webGPU.wgpuRenderPassEncoderDraw(renderPass, 3, 1, 0, 0);
     }
 
 
     private void initWebGPU(long windowHandle) {
         webGPU = WgpuJava.init();
 
-        Pointer instance = webGPU.CreateInstance();
+        Pointer instance = webGPU.wgpuCreateInstance();
 
-        surface = webGPU.glfwGetWGPUSurface(instance, windowHandle);
+        surface = WgpuJava.utils.glfwGetWGPUSurface(instance, windowHandle);
 
         device = initDevice(instance);
 
-        webGPU.InstanceRelease(instance);       // we can release the instance now that we have the device
+        webGPU.wgpuInstanceRelease(instance);       // we can release the instance now that we have the device
 
-        queue = webGPU.DeviceGetQueue(device);
+        queue = webGPU.wgpuDeviceGetQueue(device);
 
         initSwapChain(WIDTH, HEIGHT);
         pipeline = initPipeline();
@@ -102,34 +102,30 @@ public class HelloTriangle {
 
         // Select an Adapter
         //
-        System.out.println("define adapter options");
         WGPURequestAdapterOptions options = WGPURequestAdapterOptions.createDirect();
         options.setNextInChain();
         options.setCompatibleSurface(surface);
         options.setBackendType(backend);
         options.setPowerPreference(WGPUPowerPreference.HighPerformance);
 
-        System.out.println("defined adapter options");
-
         // Get Adapter
-        Pointer adapter = webGPU.RequestAdapterSync(instance, options);
-        System.out.println("adapter = " + adapter);
+        Pointer adapter = WgpuJava.getUtils().RequestAdapterSync(instance, options);
 
         WGPUSupportedLimits supportedLimits = WGPUSupportedLimits.createDirect();
-        webGPU.AdapterGetLimits(adapter, supportedLimits);
-        System.out.println("adapter maxVertexAttributes " + supportedLimits.getLimits().getMaxVertexAttributes());
-        System.out.println("adapter maxBindGroups " + supportedLimits.getLimits().getMaxBindGroups());
-
-        System.out.println("maxTextureDimension1D " + supportedLimits.getLimits().getMaxTextureDimension1D());
-        System.out.println("maxTextureDimension2D " + supportedLimits.getLimits().getMaxTextureDimension2D());
-        System.out.println("maxTextureDimension3D " + supportedLimits.getLimits().getMaxTextureDimension3D());
-        System.out.println("maxTextureArrayLayers " + supportedLimits.getLimits().getMaxTextureArrayLayers());
+        webGPU.wgpuAdapterGetLimits(adapter, supportedLimits);
+//        System.out.println("adapter maxVertexAttributes " + supportedLimits.getLimits().getMaxVertexAttributes());
+//        System.out.println("adapter maxBindGroups " + supportedLimits.getLimits().getMaxBindGroups());
+//
+//        System.out.println("maxTextureDimension1D " + supportedLimits.getLimits().getMaxTextureDimension1D());
+//        System.out.println("maxTextureDimension2D " + supportedLimits.getLimits().getMaxTextureDimension2D());
+//        System.out.println("maxTextureDimension3D " + supportedLimits.getLimits().getMaxTextureDimension3D());
+//        System.out.println("maxTextureArrayLayers " + supportedLimits.getLimits().getMaxTextureArrayLayers());
 
 
         WGPUAdapterProperties adapterProperties = WGPUAdapterProperties.createDirect();
         adapterProperties.setNextInChain();
 
-        webGPU.AdapterGetProperties(adapter, adapterProperties);
+        webGPU.wgpuAdapterGetProperties(adapter, adapterProperties);
 
         System.out.println("VendorID: " + adapterProperties.getVendorID());
         System.out.println("Vendor name: " + adapterProperties.getVendorName());
@@ -150,30 +146,30 @@ public class HelloTriangle {
         deviceDescriptor.setRequiredFeatureCount(0);
         deviceDescriptor.setRequiredFeatures(null);
 
-        Pointer device = webGPU.RequestDeviceSync(adapter, deviceDescriptor);
+        Pointer device = WgpuJava.getUtils().RequestDeviceSync(adapter, deviceDescriptor);
 
         // use a lambda expression to define a callback function
         WGPUErrorCallback deviceCallback = (WGPUErrorType type, String message, Pointer userdata) -> {
             System.out.println("*** Device error: " + type + " : " + message);
             System.exit(-1);
         };
-        webGPU.DeviceSetUncapturedErrorCallback(device, deviceCallback, null);
+        webGPU.wgpuDeviceSetUncapturedErrorCallback(device, deviceCallback, null);
 
-        webGPU.DeviceGetLimits(device, supportedLimits);
-        System.out.println("device maxVertexAttributes " + supportedLimits.getLimits().getMaxVertexAttributes());
-
-        System.out.println("maxTextureDimension1D " + supportedLimits.getLimits().getMaxTextureDimension1D());
-        System.out.println("maxTextureDimension2D " + supportedLimits.getLimits().getMaxTextureDimension2D());
-        System.out.println("maxTextureDimension3D " + supportedLimits.getLimits().getMaxTextureDimension3D());
-        System.out.println("maxTextureArrayLayers " + supportedLimits.getLimits().getMaxTextureArrayLayers());
+        webGPU.wgpuDeviceGetLimits(device, supportedLimits);
+//        System.out.println("device maxVertexAttributes " + supportedLimits.getLimits().getMaxVertexAttributes());
+//
+//        System.out.println("maxTextureDimension1D " + supportedLimits.getLimits().getMaxTextureDimension1D());
+//        System.out.println("maxTextureDimension2D " + supportedLimits.getLimits().getMaxTextureDimension2D());
+//        System.out.println("maxTextureDimension3D " + supportedLimits.getLimits().getMaxTextureDimension3D());
+//        System.out.println("maxTextureArrayLayers " + supportedLimits.getLimits().getMaxTextureArrayLayers());
 
         WGPUSurfaceCapabilities caps = WGPUSurfaceCapabilities.createDirect();
-        webGPU.SurfaceGetCapabilities(surface, adapter, caps);
+        webGPU.wgpuSurfaceGetCapabilities(surface, adapter, caps);
         Pointer formats = caps.getFormats();
         int format = formats.getInt(0);
         surfaceFormat = WGPUTextureFormat.values()[format];
 
-        webGPU.AdapterRelease(adapter);       // we can release our adapter as soon as we have a device
+        webGPU.wgpuAdapterRelease(adapter);       // we can release our adapter as soon as we have a device
         return device;
     }
 
@@ -195,14 +191,14 @@ public class HelloTriangle {
         config.setPresentMode(vsyncEnabled ? WGPUPresentMode.Fifo : WGPUPresentMode.Immediate);
         config.setAlphaMode(WGPUCompositeAlphaMode.Auto);
 
-        webGPU.SurfaceConfigure(surface, config);
+        webGPU.wgpuSurfaceConfigure(surface, config);
     }
 
 
     private Pointer getNextSurfaceTextureView() {
         // [...] Get the next surface texture
         WGPUSurfaceTexture surfaceTexture = WGPUSurfaceTexture.createDirect();
-        webGPU.SurfaceGetCurrentTexture(surface, surfaceTexture);
+        webGPU.wgpuSurfaceGetCurrentTexture(surface, surfaceTexture);
         //System.out.println("get current texture: "+surfaceTexture.status.get());
         if(surfaceTexture.getStatus() != WGPUSurfaceGetCurrentTextureStatus.Success){
             System.out.println("*** No current texture");
@@ -213,7 +209,7 @@ public class HelloTriangle {
         viewDescriptor.setNextInChain();
         viewDescriptor.setLabel("Surface texture view");
         Pointer tex = surfaceTexture.getTexture();
-        WGPUTextureFormat format = webGPU.TextureGetFormat(tex);
+        WGPUTextureFormat format = webGPU.wgpuTextureGetFormat(tex);
         //System.out.println("Set format "+format);
         viewDescriptor.setFormat(format);
         viewDescriptor.setDimension(WGPUTextureViewDimension._2D);
@@ -222,10 +218,10 @@ public class HelloTriangle {
         viewDescriptor.setBaseArrayLayer(0);
         viewDescriptor.setArrayLayerCount(1);
         viewDescriptor.setAspect(WGPUTextureAspect.All);
-        Pointer view =  webGPU.TextureCreateView(surfaceTexture.getTexture(), viewDescriptor);
+        Pointer view =  webGPU.wgpuTextureCreateView(surfaceTexture.getTexture(), viewDescriptor);
 
         // we can release the texture now as the texture view now has its own reference to it
-        webGPU.TextureRelease(surfaceTexture.getTexture());
+        webGPU.wgpuTextureRelease(surfaceTexture.getTexture());
         return view;
     }
 
@@ -234,15 +230,15 @@ public class HelloTriangle {
         encoderDescriptor.setNextInChain();
         encoderDescriptor.setLabel("My Encoder");
 
-        return webGPU.DeviceCreateCommandEncoder(device, encoderDescriptor);
+        return webGPU.wgpuDeviceCreateCommandEncoder(device, encoderDescriptor);
     }
 
     private void exitWebGPU() {
-        webGPU.RenderPipelineRelease(pipeline);
-        webGPU.SurfaceUnconfigure(surface);
-        webGPU.QueueRelease(queue);
-        webGPU.DeviceRelease(device);
-        webGPU.SurfaceRelease(surface);
+        webGPU.wgpuRenderPipelineRelease(pipeline);
+        webGPU.wgpuSurfaceUnconfigure(surface);
+        webGPU.wgpuQueueRelease(queue);
+        webGPU.wgpuDeviceRelease(device);
+        webGPU.wgpuSurfaceRelease(surface);
 
     }
 
@@ -274,7 +270,7 @@ public class HelloTriangle {
         renderPassDescriptor.setOcclusionQuerySet(WgpuJava.createNullPointer());
         renderPassDescriptor.setDepthStencilAttachment();       // no depth buffer or stencil buffer
 
-        return webGPU.CommandEncoderBeginRenderPass(encoder, renderPassDescriptor);
+        return webGPU.wgpuCommandEncoderBeginRenderPass(encoder, renderPassDescriptor);
     }
 
     private void finishEncoder(Pointer encoder){
@@ -282,17 +278,17 @@ public class HelloTriangle {
         WGPUCommandBufferDescriptor bufferDescriptor =  WGPUCommandBufferDescriptor.createDirect();
         bufferDescriptor.setNextInChain();
         bufferDescriptor.setLabel("Command Buffer");
-        Pointer commandBuffer = webGPU.CommandEncoderFinish(encoder, bufferDescriptor);
+        Pointer commandBuffer = webGPU.wgpuCommandEncoderFinish(encoder, bufferDescriptor);
 
         // Release the command encoder
-        webGPU.CommandEncoderRelease(encoder);
+        webGPU.wgpuCommandEncoderRelease(encoder);
 
         // Submit the command buffer to the queue
         Pointer bufferPtr = WgpuJava.createLongArrayPointer(new long[]{commandBuffer.address() });
-        webGPU.QueueSubmit(queue, 1, bufferPtr);
+        webGPU.wgpuQueueSubmit(queue, 1, bufferPtr);
 
         // Now we can release the command buffer
-        webGPU.CommandBufferRelease(commandBuffer);
+        webGPU.wgpuCommandBufferRelease(commandBuffer);
     }
 
 
@@ -351,12 +347,12 @@ public class HelloTriangle {
         pipelineDesc.getMultisample().setAlphaToCoverageEnabled(0);
 
         pipelineDesc.setLayout(WgpuJava.createNullPointer());
-        pipeline = webGPU.DeviceCreateRenderPipeline(device, pipelineDesc);
+        pipeline = webGPU.wgpuDeviceCreateRenderPipeline(device, pipelineDesc);
         if(pipeline == null)
             throw new RuntimeException("Pipeline creation failed");
 
         // We no longer need to access the shader module
-        webGPU.ShaderModuleRelease(shaderModule);
+        webGPU.wgpuShaderModuleRelease(shaderModule);
         return pipeline;
     }
 
@@ -391,7 +387,7 @@ public class HelloTriangle {
 
         shaderDesc.getNextInChain().set(shaderCodeDesc.getPointerTo());
 
-        Pointer shaderModule = webGPU.DeviceCreateShaderModule(device, shaderDesc);
+        Pointer shaderModule = webGPU.wgpuDeviceCreateShaderModule(device, shaderDesc);
         if(shaderModule == null)
             throw new RuntimeException("ShaderModule: compile failed.");
         return shaderModule;

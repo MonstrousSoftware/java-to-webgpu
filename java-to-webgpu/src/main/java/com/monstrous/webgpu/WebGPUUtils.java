@@ -4,25 +4,19 @@ import jnr.ffi.Pointer;
 
 public interface WebGPUUtils { // A representation of the C interface in Java
 
-    final static long WGPU_DEPTH_SLICE_UNDEFINED = -1L;
-
-    Pointer gdx2d_load (Pointer buffer, int len);
-    void gdx2d_free(Pointer pixmapInfo);
-
     Pointer glfwGetWGPUSurface(Pointer instance, long HWND);
 
-
+    Pointer RequestAdapterSync(Pointer instance, WGPURequestAdapterOptions options);
+    Pointer RequestDeviceSync(Pointer adapter, WGPUDeviceDescriptor descriptor);
+/*
     Pointer CreateInstance();
     void InstanceRelease(Pointer instance);
-
-    Pointer RequestAdapterSync(Pointer instance, WGPURequestAdapterOptions options);
-
 
     void AdapterRelease(Pointer adapter);
     boolean    AdapterGetLimits(Pointer adapter, WGPUSupportedLimits limits);
     void AdapterGetProperties(Pointer adapter, WGPUAdapterProperties properties);
 
-    Pointer RequestDeviceSync(Pointer adapter, WGPUDeviceDescriptor descriptor);
+
     void DeviceRelease(Pointer device);
     void DeviceTick(Pointer device);    // DAWN
     //WGPUStatus DeviceGetFeatures(Pointer device, WGPUSupportedFeatures features);
@@ -111,5 +105,8 @@ public interface WebGPUUtils { // A representation of the C interface in Java
     Pointer CreateQuerySet(Pointer device, WGPUQuerySetDescriptor queryDesc);
 
     void CommandEncoderResolveQuerySet(Pointer commandEncoder, Pointer querySet, int firstQuery, int queryCount, Pointer destination, long destinationOffset);
+*/
 
+//    Pointer gdx2d_load (Pointer buffer, int len);
+//    void gdx2d_free(Pointer pixmapInfo);
 }

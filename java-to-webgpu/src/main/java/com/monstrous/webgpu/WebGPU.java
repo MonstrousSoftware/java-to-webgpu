@@ -1,8 +1,6 @@
 package com.monstrous.webgpu;
 
-import jnr.ffi.LibraryLoader;
 import jnr.ffi.Pointer;
-import jnr.ffi.Runtime;
 
 public interface WebGPU { // A representation of the C interface in Java
 
@@ -10,14 +8,15 @@ public interface WebGPU { // A representation of the C interface in Java
     Pointer wgpuCreateInstance();
     void wgpuInstanceRelease(Pointer instance);
 
-    Pointer wgpuRequestAdapterSync(Pointer instance, WGPURequestAdapterOptions options);
+    //Pointer wgpuRequestAdapterSync(Pointer instance, WGPURequestAdapterOptions options);
+    //Pointer wgpuRequestDeviceSync(Pointer adapter, WGPUDeviceDescriptor descriptor);
 
 
     void wgpuAdapterRelease(Pointer adapter);
     boolean    wgpuAdapterGetLimits(Pointer adapter, WGPUSupportedLimits limits);
     void wgpuAdapterGetProperties(Pointer adapter, WGPUAdapterProperties properties);
 
-    Pointer wgpuRequestDeviceSync(Pointer adapter, WGPUDeviceDescriptor descriptor);
+
     void wgpuDeviceRelease(Pointer device);
     void wgpuDeviceTick(Pointer device);    // DAWN
     //WGPUStatus wgpuDeviceGetFeatures(Pointer device, WGPUSupportedFeatures features);

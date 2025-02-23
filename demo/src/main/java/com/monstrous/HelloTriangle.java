@@ -14,7 +14,7 @@ public class HelloTriangle {
     public final static int WIDTH = 640;
     public final static int HEIGHT = 480;
 
-    private WGPUBackendType backend = WGPUBackendType.D3D12;        // or Vulkan, etc.
+    private WGPUBackendType backend = WGPUBackendType.Undefined;//.D3D12;        // or Vulkan, etc.
     private boolean vsyncEnabled = true;
 
     private WebGPU webGPU;
@@ -111,6 +111,7 @@ public class HelloTriangle {
         // Get Adapter
         Pointer adapter = WgpuJava.getUtils().RequestAdapterSync(instance, options);
 
+
         WGPUSupportedLimits supportedLimits = WGPUSupportedLimits.createDirect();
         webGPU.wgpuAdapterGetLimits(adapter, supportedLimits);
 //        System.out.println("adapter maxVertexAttributes " + supportedLimits.getLimits().getMaxVertexAttributes());
@@ -147,6 +148,14 @@ public class HelloTriangle {
         deviceDescriptor.setRequiredFeatures(null);
 
         Pointer device = WgpuJava.getUtils().RequestDeviceSync(adapter, deviceDescriptor);
+
+//        // use a lambda expression to define a callback function
+//        WGPURequestDeviceCallback requestDeviceCallback = (WGPUErrorType type, String message, Pointer userdata) -> {
+//            System.out.println("*** Device error: " + type + " : " + message);
+//            System.exit(-1);
+//        };
+//
+//        webGPU.wgpuAdapterRequestDevice(adapter, deviceDescriptor, requestDeviceCallback, userData);
 
         // use a lambda expression to define a callback function
         WGPUErrorCallback deviceCallback = (WGPUErrorType type, String message, Pointer userdata) -> {

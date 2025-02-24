@@ -19,9 +19,8 @@ public class WgpuJava {
 
     public static WebGPU init(){
 
-        //WebGPU webGPU = LibraryLoader.create(WebGPU.class).load("wgpu_native"); // load the library
         WebGPU webGPU = LibraryLoader.create(WebGPU.class).load("dawn"); // load the library
-        utils = LibraryLoader.create(WebGPUUtils.class).load("wrapper"); // load the library
+        utils = LibraryLoader.create(WebGPUUtils.class).load("webgpuUtils"); // load the library
         runtime = Runtime.getRuntime(webGPU);
         return webGPU;
     }

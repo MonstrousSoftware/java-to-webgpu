@@ -28,6 +28,7 @@ Which is the equivalent of the following C++ code:
 ## Modules
 - ```java-to-webgpu```  Java library to call WebGPU
 - ```demo``` Sample application
+- ```webgpuUtils```   Native library with utility functions (C++)
 
 
 ## Switching between Native WGPU and DAWN
@@ -42,13 +43,13 @@ todo:
 - can we link project to dawn.dll or do we need to copy inside?
 - can we move the 2 Request calls from wrapper to Java?
 - clean up the logic of WgpuJava and the start-up sequence.
-- using wgpu_native.dll causes crash
+- using wgpu_native.dll causes crash in RequestAdapterSync
 - is there no way we can remove wgpu prefix from function names because we now also have an object name.
 - why is wrapper not smaller? 1.6 Mb
 - which version of webgpu are we using? version of dawn?
 - can we select driver on startup?
 - license
-- official header fle seems to be at: https://github.com/webgpu-native/webgpu-headers
+- official header file seems to be at: https://github.com/webgpu-native/webgpu-headers
 
 
 if on laptop you request backend Undefined it chooses D3D12 but issues a warning:
@@ -58,3 +59,11 @@ Warning: Disable Intel Vulkan adapter on Windows driver version 101.1122. See ht
 - While initializing adapter (backend=BackendType::Vulkan)
   at InitializeImpl (D:\a\webgpu-dawn-binaries\webgpu-dawn-binaries\build\_deps\dawn-src\src\dawn\native\vulkan\PhysicalDeviceVk.cpp:130)
 Otherwise only D3D11 and D3D12 are supported.
+
+Versioning:
+Gradle 8.0
+Java version 17
+LWJGL version:3.3.4+7
+JNR-FFI
+
+wgpu-native binaries: https://github.com/gfx-rs/wgpu-native/releases

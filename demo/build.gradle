@@ -37,6 +37,4 @@ dependencies {
     implementation "org.lwjgl:lwjgl-glfw"
 
     runtimeOnly "org.lwjgl:lwjgl::$lwjglNatives"
-
-    //implementation project(':wrapper')
 }

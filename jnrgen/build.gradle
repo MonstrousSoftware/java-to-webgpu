@@ -1,0 +1,18 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group = 'com.monstrous'
+version = 'unspecified'
+
+application {
+    mainClass = 'jnrgen.JNRGenerator'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+}

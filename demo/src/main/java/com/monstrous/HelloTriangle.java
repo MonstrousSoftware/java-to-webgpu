@@ -1,7 +1,7 @@
 package com.monstrous;
 
 import com.monstrous.webgpu.*;
-import com.monstrous.wgpuUtils.WgpuJava;
+import com.monstrous.utils.WgpuJava;
 import jnr.ffi.Pointer;
 
 
@@ -17,7 +17,7 @@ public class HelloTriangle {
     private WGPUBackendType backend = WGPUBackendType.Undefined;//.D3D12;        // or Vulkan, etc.
     private boolean vsyncEnabled = true;
 
-    private WebGPU webGPU;
+    private WebGPU_JNI webGPU;
     private Pointer surface;
     private WGPUTextureFormat surfaceFormat;
     private Pointer device;
@@ -83,9 +83,9 @@ public class HelloTriangle {
     private void initWebGPU(long windowHandle) {
         webGPU = WgpuJava.init();
 
-        Pointer instance = webGPU.wgpuCreateInstance();
+        Pointer instance = webGPU.wgpuCreateInstance(null);
 
-        surface = WgpuJava.utils.glfwGetWGPUSurface(instance, windowHandle);
+        surface = WgpuJava.getUtils().glfwGetWGPUSurface(instance, windowHandle);
 
         device = initDevice(instance);
 
@@ -108,8 +108,11 @@ public class HelloTriangle {
         options.setBackendType(backend);
         options.setPowerPreference(WGPUPowerPreference.HighPerformance);
 
+
+
+
         // Get Adapter
-        Pointer adapter = WgpuJava.getUtils().RequestAdapterSync(instance, options);
+        Pointer adapter = WgpuJava.getUtils().RequestAdapterSync(instance,  options);
 
 
         WGPUSupportedLimits supportedLimits = WGPUSupportedLimits.createDirect();
@@ -145,7 +148,7 @@ public class HelloTriangle {
         deviceDescriptor.setLabel("My Device");
         deviceDescriptor.setRequiredLimits(requiredLimits);
         deviceDescriptor.setRequiredFeatureCount(0);
-        deviceDescriptor.setRequiredFeatures(null);
+        deviceDescriptor.setRequiredFeatures(WgpuJava.createNullPointer());
 
         Pointer device = WgpuJava.getUtils().RequestDeviceSync(adapter, deviceDescriptor);
 
@@ -293,7 +296,7 @@ public class HelloTriangle {
         webGPU.wgpuCommandEncoderRelease(encoder);
 
         // Submit the command buffer to the queue
-        Pointer bufferPtr = WgpuJava.createLongArrayPointer(new long[]{commandBuffer.address() });
+        Pointer bufferPtr = WgpuJava.createLongArrayPointer(new long[]{ commandBuffer.address() });
         webGPU.wgpuQueueSubmit(queue, 1, bufferPtr);
 
         // Now we can release the command buffer
@@ -357,7 +360,7 @@ public class HelloTriangle {
 
         pipelineDesc.setLayout(WgpuJava.createNullPointer());
         pipeline = webGPU.wgpuDeviceCreateRenderPipeline(device, pipelineDesc);
-        if(pipeline == null)
+        if(pipeline.address() == 0)
             throw new RuntimeException("Pipeline creation failed");
 
         // We no longer need to access the shader module
@@ -397,15 +400,14 @@ public class HelloTriangle {
         shaderDesc.getNextInChain().set(shaderCodeDesc.getPointerTo());
 
         Pointer shaderModule = webGPU.wgpuDeviceCreateShaderModule(device, shaderDesc);
-        if(shaderModule == null)
+        if(shaderModule.address() == 0)
             throw new RuntimeException("ShaderModule: compile failed.");
         return shaderModule;
     }
 
 
-    final static long WGPU_LIMIT_U32_UNDEFINED = 4294967295L;
-    final static long WGPU_LIMIT_U64_UNDEFINED = Long.MAX_VALUE;
-    // should be 2^64-1 (18446744073709551615L) but Java longs are signed, so it is half that. It seems to work though.
+    final static long WGPU_LIMIT_U32_UNDEFINED = -1;
+    final static long WGPU_LIMIT_U64_UNDEFINED = -1L;
 
     public void setDefaultLimits(WGPULimits limits) {
         limits.setMaxTextureDimension1D(WGPU_LIMIT_U32_UNDEFINED);

@@ -2,4 +2,7 @@ rootProject.name = "Java-to-WebGPU"
 include 'demo'
 include 'java-to-webgpu'
 include 'webgpuUtils'
+include 'java-to-webgpu:jnrgen'
+findProject(':java-to-webgpu:jnrgen')?.name = 'jnrgen'
+include 'jnrgen'
 

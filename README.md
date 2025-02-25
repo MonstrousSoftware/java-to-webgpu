@@ -13,23 +13,78 @@ This is a library to use native WebGPU libraries using Java.
 
 Before using any WebGPU functions call:
 
-    WebGPU webGPU = WguJava.init();
+    WebGPU_JNI webGPU = WguJava.init();
 
 Then use the webGPU object to call the different WebGPU functions. For example:
 
-    Pointer instance = webGPU.CreateInstance();
+    Pointer instance = webGPU.wgpuCreateInstance(null);
 
 Which is the equivalent of the following C++ code:
 
     // We create the instance using this descriptor
     WGPUInstance instance = wgpuCreateInstance(nullptr)
 
+The native utility library can be accessed as follows
+
+    WebGPUUtils_JNI utils = WgpuJava.getUtils();
+
+This library provide asynchronous methods to obtain an Adapter and a Device and a method to get a WGPUSurface from a GLFW window.
+
 
 ## Modules
 - ```java-to-webgpu```  Java library to call WebGPU
 - ```demo``` Sample application
+- ```jnrgen``` Generator to create the Java interface from a C++ header file
 - ```webgpuUtils```   Native library with utility functions (C++)
 
+
+## Coding caveats
+The triangle demo follows the tutorial of WebGPU for C++ by Elie Michel (https://eliemichel.github.io/LearnWebGPU/)
+
+Some difference will be apparent between the Java and C++ version.
+
+Any resource provided by WebGPU, such as an Adapter, a Device, a Texture, a Buffer, 
+etcetera, is represented by a Pointer object.  In the C++ code there are different pointer types 
+defined such as WGPUAdapter, WGPUDevice, etc. which helps keep the code more readable, but Java does
+not support the typedef mechanism for this.
+
+In C++ it is very easy to create and fill a descriptor object:
+
+``` WGPUDeviceDescriptor deviceDesc = {};
+	deviceDesc.nextInChain = nullptr;
+	deviceDesc.label = "My Device"; // anything works here, that's your call
+	deviceDesc.requiredFeatureCount = 0; // we do not require any specific feature
+	deviceDesc.requiredLimits = nullptr; // we do not require any specific limit
+	deviceDesc.defaultQueue.nextInChain = nullptr;
+	deviceDesc.defaultQueue.label = "The default queue";
+```
+ 
+In Java, we have to do a bit more work in order to put the data in native memory so that the object can be passed to the driver:
+
+```  
+  WGPUDeviceDescriptor deviceDesc = WGPUDeviceDescriptor.createDirect();
+  deviceDesc.setNextInChain();
+  deviceDesc.setLabel("My Device");
+  // etc.
+```
+
+The `createDirect()` method is used to create an object in native memory. Access to its members is exclusively via getters and setters.
+
+
+
+
+## Generating the API files
+
+The API files were generated from a C++ header file.  The header file is a simplified version of `webgpu.h`.
+Running the `jnrgen` application regenerates those files into `jnrgen\src\generated`. 
+(The directory needs to be empty first).  
+These files need to be copied across to `java-to-webgpu\src\main\java\com\monstrous\webgpu`.  
+This is left as a manual step to avoid accidental overwriting. 
+
+The generator is based on work from Noah Charlton (https://github.com/kgpu/wgpu-java) but was heavily modified.
+And when I say modified, I mean hacked with kludge upon kludge.
+
+Future work: fix the generator to accept the original webgpu.h header file.
 
 ## Switching between Native WGPU and DAWN
 to do 
@@ -66,4 +121,4 @@ Java version 17
 LWJGL version:3.3.4+7
 JNR-FFI
 
-wgpu-native binaries: https://github.com/gfx-rs/wgpu-native/releases
+

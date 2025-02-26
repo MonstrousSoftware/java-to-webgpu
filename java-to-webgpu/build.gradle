@@ -1,11 +1,13 @@
 plugins {
     id 'java'
+    id 'maven-publish'
 }
 
-group = 'com.monstrous'
+group = 'com.monstrous.java-to-WebGPU'
 version = '1.0'
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
@@ -13,4 +15,18 @@ repositories {
 dependencies {
     implementation 'com.github.jnr:jnr-ffi:2.2.17'
     implementation "com.badlogicgames.gdx:gdx-jnigen-loader:2.5.2"
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = 'com.monstrous.java-to-WebGPU'
+            artifactId = 'java-to-webgpu'
+            version = "1.0"
+            from components.java
+        }
+    }
+    repositories {
+        mavenLocal()
+    }
 }

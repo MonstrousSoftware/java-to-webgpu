@@ -12,9 +12,9 @@ This is a library to use native WebGPU libraries using Java.
 ## How to
 
 Before using any WebGPU functions call:
-
+```java
     WebGPU_JNI webGPU = JavaWebGPU.init();
-
+```
 Then use the returned object to call the different WebGPU functions. For example:
 ```java
     Pointer instance = webGPU.wgpuCreateInstance(null);
@@ -27,17 +27,17 @@ Which is the equivalent of the following C++ code:
     wgpuInstanceRelease(instance);
 ```
 At some point you will need some auxiliary functions which are not provided by WebGPU itself. For this there is a utility library.
-The native utility library can be accessed as follows
+The native utility library can be accessed through `JavaWebGPU.getUtils()` as in the following example:
 ```java
-    WebGPUUtils_JNI utils = WgpuJava.getUtils();
+    surface = JavaWebGPU.getUtils().glfwGetWGPUSurface(instance, windowHandle);
 ```
-This library provide asynchronous methods to obtain an Adapter and a Device and a method to get a WGPUSurface from a GLFW window.
+This utility library provide asynchronous methods to obtain an Adapter and a Device and a method to get a WGPUSurface from a GLFW window.
 
 
 ## Modules
 - `java-to-webgpu`  Java library to call WebGPU
 - `demo` Sample application
-- `jnrgen` Generator to create the Java interface from a C++ header file
+- `jnrgen` Generator to create the Java bindings from a C++ header file
 - `webgpuUtils`   Source of native utility library (C++)
 
 

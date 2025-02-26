@@ -101,10 +101,8 @@ To regenerate the bindings (empty the directory `jnrgen\src\generated` first):
 
 The Java bindings were generated automatically from a C++ header file.  This header file is a slightly simplified version of `webgpu.h`, e.g. with some preprocessor commands removed.  The official C++ header file for WebGPU is maintained at [https://github.com/webgpu-native/webgpu-headers](https://github.com/webgpu-native/webgpu-headers).
 
-Running the `jnrgen` application regenerates those files into `jnrgen\src\generated`. 
+Running the `jnrgen` application regenerates those files into `java-to-webgpu\src\main\java\com\monstrous\webgpu`. 
 (The directory needs to be empty first, otherwise you will get an error message).  
-These files need to be manually copied across to `java-to-webgpu\src\main\java\com\monstrous\webgpu`.  
-This is left as a manual step to avoid accidental overwriting. 
 
 The generator is based on work from Noah Charlton (https://github.com/kgpu/wgpu-java) but was heavily modified.
 

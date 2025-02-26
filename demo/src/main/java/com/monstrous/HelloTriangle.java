@@ -20,18 +20,20 @@ import com.monstrous.webgpu.*;
 import com.monstrous.utils.WgpuJava;
 import jnr.ffi.Pointer;
 
+import java.io.IOException;
+import java.io.InputStream;
 
 // Render a triangle in a window
 //
-// Following the tutorial WebGPU in C++ https://eliemichel.github.io/LearnWebGPU/
+// Following the tutorial "WebGPU in C++" https://eliemichel.github.io/LearnWebGPU/
 
 
 public class HelloTriangle {
     public final static int WIDTH = 640;
     public final static int HEIGHT = 480;
 
-    private WGPUBackendType backend = WGPUBackendType.Undefined;//.D3D12;        // or Vulkan, etc.
-    private boolean vsyncEnabled = true;
+    private final WGPUBackendType backend = WGPUBackendType.Undefined;//.D3D12;        // or Vulkan, etc.
+    private final boolean vsyncEnabled = true;
 
     private WebGPU_JNI webGPU;
     private Pointer surface;
@@ -124,24 +126,10 @@ public class HelloTriangle {
         options.setBackendType(backend);
         options.setPowerPreference(WGPUPowerPreference.HighPerformance);
 
-
-
-
         // Get Adapter
         Pointer adapter = WgpuJava.getUtils().RequestAdapterSync(instance,  options);
 
-
-        WGPUSupportedLimits supportedLimits = WGPUSupportedLimits.createDirect();
-        webGPU.wgpuAdapterGetLimits(adapter, supportedLimits);
-//        System.out.println("adapter maxVertexAttributes " + supportedLimits.getLimits().getMaxVertexAttributes());
-//        System.out.println("adapter maxBindGroups " + supportedLimits.getLimits().getMaxBindGroups());
-//
-//        System.out.println("maxTextureDimension1D " + supportedLimits.getLimits().getMaxTextureDimension1D());
-//        System.out.println("maxTextureDimension2D " + supportedLimits.getLimits().getMaxTextureDimension2D());
-//        System.out.println("maxTextureDimension3D " + supportedLimits.getLimits().getMaxTextureDimension3D());
-//        System.out.println("maxTextureArrayLayers " + supportedLimits.getLimits().getMaxTextureArrayLayers());
-
-
+        // Get Adapter properties out of interest
         WGPUAdapterProperties adapterProperties = WGPUAdapterProperties.createDirect();
         adapterProperties.setNextInChain();
 
@@ -183,14 +171,7 @@ public class HelloTriangle {
         };
         webGPU.wgpuDeviceSetUncapturedErrorCallback(device, deviceCallback, null);
 
-        webGPU.wgpuDeviceGetLimits(device, supportedLimits);
-//        System.out.println("device maxVertexAttributes " + supportedLimits.getLimits().getMaxVertexAttributes());
-//
-//        System.out.println("maxTextureDimension1D " + supportedLimits.getLimits().getMaxTextureDimension1D());
-//        System.out.println("maxTextureDimension2D " + supportedLimits.getLimits().getMaxTextureDimension2D());
-//        System.out.println("maxTextureDimension3D " + supportedLimits.getLimits().getMaxTextureDimension3D());
-//        System.out.println("maxTextureArrayLayers " + supportedLimits.getLimits().getMaxTextureArrayLayers());
-
+        // Find out the preferred surface format of the window
         WGPUSurfaceCapabilities caps = WGPUSurfaceCapabilities.createDirect();
         webGPU.wgpuSurfaceGetCapabilities(surface, adapter, caps);
         Pointer formats = caps.getFormats();
@@ -384,26 +365,25 @@ public class HelloTriangle {
         return pipeline;
     }
 
+    private String readShaderSource(){
+        try {
+            InputStream inputStream = HelloTriangle.class.getResourceAsStream("/triangleShader.wgsl");
+            StringBuilder sb = new StringBuilder();
+            for (int ch; (ch = inputStream.read()) != -1; ) {
+                sb.append((char) ch);
+            }
+            return sb.toString();
 
-    private String source = "@vertex\n" +
-            "fn vs_main(@builtin(vertex_index) in_vertex_index: u32) -> @builtin(position) vec4f {\n" +
-            "    var p = vec2f(0.0, 0.0);\n" +
-            "    if (in_vertex_index == 0u) {\n" +
-            "        p = vec2f(-0.5, -0.5);\n" +
-            "    } else if (in_vertex_index == 1u) {\n" +
-            "        p = vec2f(0.5, -0.5);\n" +
-            "    } else {\n" +
-            "        p = vec2f(0.0, 0.5);\n" +
-            "    }\n" +
-            "    return vec4f(p, 0.0, 1.0);\n" +
-            "}\n" +
-            "\n" +
-            "@fragment\n" +
-            "fn fs_main() -> @location(0) vec4f {\n" +
-            "    return vec4f(0.0, 0.4, 1.0, 1.0);\n" +
-            "}\n";
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     private Pointer makeShaderModule(){
+
+        String shaderSource = readShaderSource();
+
         // Create Shader Module
         WGPUShaderModuleDescriptor shaderDesc = WGPUShaderModuleDescriptor.createDirect();
         shaderDesc.setLabel("triangle shader");
@@ -411,7 +391,7 @@ public class HelloTriangle {
         WGPUShaderModuleWGSLDescriptor shaderCodeDesc = WGPUShaderModuleWGSLDescriptor.createDirect();
         shaderCodeDesc.getChain().setNext();
         shaderCodeDesc.getChain().setSType(WGPUSType.ShaderModuleWGSLDescriptor);
-        shaderCodeDesc.setCode(source);
+        shaderCodeDesc.setCode(shaderSource);
 
         shaderDesc.getNextInChain().set(shaderCodeDesc.getPointerTo());
 

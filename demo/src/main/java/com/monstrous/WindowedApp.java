@@ -106,6 +106,5 @@ public class WindowedApp {
         // Terminate GLFW and free the error callback
         glfwTerminate();
         glfwSetErrorCallback(null).free();
-
     }
 }

@@ -17,7 +17,7 @@
 package com.monstrous;
 
 import com.monstrous.webgpu.*;
-import com.monstrous.utils.WgpuJava;
+import com.monstrous.utils.JavaWebGPU;
 import jnr.ffi.Pointer;
 
 import java.io.IOException;
@@ -99,11 +99,11 @@ public class HelloTriangle {
 
 
     private void initWebGPU(long windowHandle) {
-        webGPU = WgpuJava.init();
+        webGPU = JavaWebGPU.init();
 
         Pointer instance = webGPU.wgpuCreateInstance(null);
 
-        surface = WgpuJava.getUtils().glfwGetWGPUSurface(instance, windowHandle);
+        surface = JavaWebGPU.getUtils().glfwGetWGPUSurface(instance, windowHandle);
 
         device = initDevice(instance);
 
@@ -127,7 +127,7 @@ public class HelloTriangle {
         options.setPowerPreference(WGPUPowerPreference.HighPerformance);
 
         // Get Adapter
-        Pointer adapter = WgpuJava.getUtils().RequestAdapterSync(instance,  options);
+        Pointer adapter = JavaWebGPU.getUtils().RequestAdapterSync(instance,  options);
 
         // Get Adapter properties out of interest
         WGPUAdapterProperties adapterProperties = WGPUAdapterProperties.createDirect();
@@ -152,9 +152,9 @@ public class HelloTriangle {
         deviceDescriptor.setLabel("My Device");
         deviceDescriptor.setRequiredLimits(requiredLimits);
         deviceDescriptor.setRequiredFeatureCount(0);
-        deviceDescriptor.setRequiredFeatures(WgpuJava.createNullPointer());
+        deviceDescriptor.setRequiredFeatures(JavaWebGPU.createNullPointer());
 
-        Pointer device = WgpuJava.getUtils().RequestDeviceSync(adapter, deviceDescriptor);
+        Pointer device = JavaWebGPU.getUtils().RequestDeviceSync(adapter, deviceDescriptor);
 
 //        // use a lambda expression to define a callback function
 //        WGPURequestDeviceCallback requestDeviceCallback = (WGPUErrorType type, String message, Pointer userdata) -> {
@@ -194,7 +194,7 @@ public class HelloTriangle {
         config.setFormat(surfaceFormat);
         // And we do not need any particular view format:
         config.setViewFormatCount(0);
-        config.setViewFormats(WgpuJava.createNullPointer());
+        config.setViewFormats(JavaWebGPU.createNullPointer());
         config.setUsage(WGPUTextureUsage.RenderAttachment);
         config.setDevice(device);
         config.setPresentMode(vsyncEnabled ? WGPUPresentMode.Fifo : WGPUPresentMode.Immediate);
@@ -211,7 +211,7 @@ public class HelloTriangle {
         //System.out.println("get current texture: "+surfaceTexture.status.get());
         if(surfaceTexture.getStatus() != WGPUSurfaceGetCurrentTextureStatus.Success){
             System.out.println("*** No current texture");
-            return WgpuJava.createNullPointer();
+            return JavaWebGPU.createNullPointer();
         }
         // [...] Create surface texture view
         WGPUTextureViewDescriptor viewDescriptor = WGPUTextureViewDescriptor.createDirect();
@@ -257,7 +257,7 @@ public class HelloTriangle {
         WGPURenderPassColorAttachment renderPassColorAttachment = WGPURenderPassColorAttachment.createDirect();
         renderPassColorAttachment.setNextInChain();
         renderPassColorAttachment.setView(targetView);
-        renderPassColorAttachment.setResolveTarget(WgpuJava.createNullPointer());
+        renderPassColorAttachment.setResolveTarget(JavaWebGPU.createNullPointer());
         renderPassColorAttachment.setLoadOp(WGPULoadOp.Clear);
         renderPassColorAttachment.setStoreOp(WGPUStoreOp.Store);
 
@@ -276,7 +276,7 @@ public class HelloTriangle {
 
         renderPassDescriptor.setColorAttachmentCount(1);
         renderPassDescriptor.setColorAttachments( renderPassColorAttachment );
-        renderPassDescriptor.setOcclusionQuerySet(WgpuJava.createNullPointer());
+        renderPassDescriptor.setOcclusionQuerySet(JavaWebGPU.createNullPointer());
         renderPassDescriptor.setDepthStencilAttachment();       // no depth buffer or stencil buffer
 
         return webGPU.wgpuCommandEncoderBeginRenderPass(encoder, renderPassDescriptor);
@@ -293,7 +293,7 @@ public class HelloTriangle {
         webGPU.wgpuCommandEncoderRelease(encoder);
 
         // Submit the command buffer to the queue
-        Pointer bufferPtr = WgpuJava.createLongArrayPointer(new long[]{ commandBuffer.address() });
+        Pointer bufferPtr = JavaWebGPU.createLongArrayPointer(new long[]{ commandBuffer.address() });
         webGPU.wgpuQueueSubmit(queue, 1, bufferPtr);
 
         // Now we can release the command buffer
@@ -355,7 +355,7 @@ public class HelloTriangle {
         pipelineDesc.getMultisample().setMask( -1L );
         pipelineDesc.getMultisample().setAlphaToCoverageEnabled(0);
 
-        pipelineDesc.setLayout(WgpuJava.createNullPointer());
+        pipelineDesc.setLayout(JavaWebGPU.createNullPointer());
         pipeline = webGPU.wgpuDeviceCreateRenderPipeline(device, pipelineDesc);
         if(pipeline.address() == 0)
             throw new RuntimeException("Pipeline creation failed");

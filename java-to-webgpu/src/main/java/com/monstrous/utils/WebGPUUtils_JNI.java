@@ -4,9 +4,14 @@ import com.monstrous.webgpu.WGPUDeviceDescriptor;
 import com.monstrous.webgpu.WGPURequestAdapterOptions;
 import jnr.ffi.Pointer;
 
+/**
+ * A representation in Java of the native C interface for wgpuUtils.dll.
+ */
+public interface WebGPUUtils_JNI {
 
-public interface WebGPUUtils_JNI { // A representation of the C interface in Java
-
+    /**
+     * Bridge between GLFW and WebGPU: Provides a Surface corresponding to a GLFW window.
+     */
     Pointer glfwGetWGPUSurface(Pointer instance, long HWND);
 
     Pointer RequestAdapterSync(Pointer instance, WGPURequestAdapterOptions options);

@@ -12,7 +12,7 @@ import java.lang.reflect.Constructor;
 public abstract class WgpuJavaStruct extends Struct {
 
     protected WgpuJavaStruct() {
-        super(WgpuJava.getRuntime());
+        super(JavaWebGPU.getRuntime());
     }
 
     protected WgpuJavaStruct(Runtime runtime) {
@@ -34,7 +34,7 @@ public abstract class WgpuJavaStruct extends Struct {
         final int size = align(Struct.size(this), Struct.alignment(this));
         //int size = Struct.size(this);
 
-        jnr.ffi.Pointer pointer = WgpuJava.getRuntime().getMemoryManager().allocateDirect(size);
+        jnr.ffi.Pointer pointer = JavaWebGPU.getRuntime().getMemoryManager().allocateDirect(size);
         useMemory(pointer);
     }
 
@@ -74,7 +74,7 @@ public abstract class WgpuJavaStruct extends Struct {
 
         public final void set(T[] structs) {
             if (structs.length == 0) {
-                set(WgpuJava.createNullPointer());
+                set(JavaWebGPU.createNullPointer());
                 return;
             }
             // MM: fixed to include alignment
@@ -82,7 +82,7 @@ public abstract class WgpuJavaStruct extends Struct {
            // int size = Struct.size(structs[0]);
             final int size = align(Struct.size(structs[0]), Struct.alignment(structs[0]));
 
-            jnr.ffi.Pointer value = WgpuJava.createDirectPointer(size * structs.length);
+            jnr.ffi.Pointer value = JavaWebGPU.createDirectPointer(size * structs.length);
             byte[] data = new byte[size];
             for (int i = 0; i < structs.length; i++) {
                 Struct.getMemory(structs[i]).get(0L, data, 0, Struct.size(structs[0]));

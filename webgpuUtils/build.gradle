@@ -38,7 +38,7 @@ tasks.withType(LinkSharedLibrary).configureEach {
 
 task copyDLL(type: Copy) {
     from 'build/lib/main/debug'
-    into '../native-libs'
+    into '../java-to-webgpu/src/main/resources'
     include '*.dll'
     outputs.upToDateWhen { false }
 }

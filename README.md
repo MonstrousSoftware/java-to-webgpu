@@ -13,7 +13,7 @@ This is a library to use native WebGPU libraries using Java.
 
 Before using any WebGPU functions call:
 
-    WebGPU_JNI webGPU = WguJava.init();
+    WebGPU_JNI webGPU = JavaWebGPU.init();
 
 Then use the returned object to call the different WebGPU functions. For example:
 ```java
@@ -26,7 +26,7 @@ Which is the equivalent of the following C++ code:
     WGPUInstance instance = wgpuCreateInstance(nullptr);
     wgpuInstanceRelease(instance);
 ```
-At some point you will need some auxiliary functions which are not provided by webgpu itself. For this there is a utility library.
+At some point you will need some auxiliary functions which are not provided by WebGPU itself. For this there is a utility library.
 The native utility library can be accessed as follows
 ```java
     WebGPUUtils_JNI utils = WgpuJava.getUtils();
@@ -38,14 +38,13 @@ This library provide asynchronous methods to obtain an Adapter and a Device and 
 - `java-to-webgpu`  Java library to call WebGPU
 - `demo` Sample application
 - `jnrgen` Generator to create the Java interface from a C++ header file
-- `native-libs` Shared native libraries (DLL files).
 - `webgpuUtils`   Source of native utility library (C++)
 
 
 ## Coding caveats
 The triangle demo follows the tutorial of WebGPU for C++ by Elie Michel (https://eliemichel.github.io/LearnWebGPU/), which is an excellent tutorial for creating native WebGPU applications (i.e. not in a browser).
 
-Some difference will be apparent between the Java and C++ version.
+Some difference will be apparent between the Java and C++ version:
 
 ### Resource handles
 Any resource provided by WebGPU, such as an Adapter, a Device, a Texture, a Buffer, 
@@ -77,8 +76,8 @@ In Java, we have to do a bit more work in order to put the data in native memory
         config.setNextInChain();
         config.setWidth(640);
         config.setHeight(480);
-	config.setUsage(WGPUTextureUsage.RenderAttachment);
-	// etc.	
+        config.setUsage(WGPUTextureUsage.RenderAttachment);
+        // etc.	
         webGPU.wgpuSurfaceConfigure(surface, config);
 ```
 
@@ -86,11 +85,17 @@ The `createDirect()` method is used to create an object in native memory. Access
 
 
 ## Gradle commands
-To run the triangle demo: triangle/application/run
+To run the triangle demo: 
 
-To compile the utility library: wgpuUtils/build (requires a C compiler to be installed, e.g. MSVC).
+    ./gradlew run
 
-To regenerate the bindings: jnrgen/application/run
+To compile the utility library (requires a C compiler to be installed, e.g. MSVC).: 
+
+    ./gradlew :webgpuUtils:build  
+
+To regenerate the bindings (empty the directory `jnrgen\src\generated` first): 
+
+    ./gradlew :jnrgen:run
 
 ## Generating the bindings
 
@@ -105,6 +110,12 @@ The generator is based on work from Noah Charlton (https://github.com/kgpu/wgpu-
 
 Future work: fix the generator to accept the original `webgpu.h` header file, so that any official updates can be reflected with minimal effort.
 
+Currently, the bindings consists of the following:
+
+     59 Enums
+     169 Structs
+     267 Functions
+     23 Callbacks
 
 ## Under the hood
 This library makes use of [JNR-FFI](https://github.com/jnr/jnr-ffi) to call native functions and uses Google's WebGPU implementation ([DAWN](https://dawn.googlesource.com/dawn)) as backend.
@@ -112,24 +123,5 @@ This library makes use of [JNR-FFI](https://github.com/jnr/jnr-ffi) to call nati
 The demo makes use of [LWJGL3](https://github.com/LWJGL/lwjgl3) to create a window which in turn uses [GLFW](https://www.glfw.org/).
 
 
-todo:
-- should we include dll in resources and copy on startup?
-- can we link project to dawn.dll or do we need to copy inside?
-- can we move the 2 Request calls from wrapper to Java?
-- clean up the logic of WgpuJava and the start-up sequence.
-- using wgpu_native.dll causes crash in RequestAdapterSync
-- is there no way we can remove wgpu prefix from function names because we now also have an object name.
-- why is wrapper not smaller? 1.6 Mb
-- which version of webgpu are we using? version of dawn?
-- can we select driver on startup?
-- license
-- official header file seems to be at: https://github.com/webgpu-native/webgpu-headers
-
-
-Versioning:
-Gradle 8.0
-Java version 17
-LWJGL version:3.3.4+7
-JNR-FFI
 
 

@@ -15,7 +15,7 @@ application {
 }
 
 run {
-    systemProperty "java.library.path", rootProject.file('native-libs').path        // where to find the DLL files
+    //systemProperty "java.library.path", rootProject.file('native-libs').path        // where to find the DLL files
     setIgnoreExitValue(true)
 }
 

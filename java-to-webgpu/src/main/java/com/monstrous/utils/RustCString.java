@@ -35,7 +35,7 @@ public class RustCString {
      */
     public static Pointer toPointer(String string){
         if(string == null)
-            return WgpuJava.createNullPointer();
+            return JavaWebGPU.createNullPointer();
 
         byte[] bytes = string.getBytes(StandardCharsets.US_ASCII);
         ByteBuffer buffer = ByteBuffer.allocateDirect(bytes.length + 1);
@@ -44,6 +44,6 @@ public class RustCString {
         buffer.put((byte) 0x00);
         buffer.position(0);
 
-        return WgpuJava.createByteBufferPointer(buffer);
+        return JavaWebGPU.createByteBufferPointer(buffer);
     }
 }

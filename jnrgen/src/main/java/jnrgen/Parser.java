@@ -23,7 +23,7 @@ public class Parser {
         Token token;
 
         while((token = poll()) != null){
-            var item = createItem(token);
+            Item item = createItem(token);
 
             if(item != null){
                 lastComment = null;
@@ -34,7 +34,7 @@ public class Parser {
 
     private Item createItem(Token token) {
         if(Token.identifier(0,"typedef").equals(token)){
-            var next = poll();
+            Token next = poll();
 
             if(Token.identifier(0,"enum").equals(next)){
                 return createEnum();
@@ -45,7 +45,7 @@ public class Parser {
                 //return createTypeAlias(next);
             }
         }else if(token.getType() == Token.TokenType.HASH){
-            var macroType = pollExpect(Token.TokenType.IDENTIFIER);
+            Token macroType = pollExpect(Token.TokenType.IDENTIFIER);
 
             if(Token.identifier(0,"define").equals(macroType)){     // #define not supported
                 skipToEndOfLine();
@@ -71,7 +71,7 @@ public class Parser {
     // also supports #define A (1) or #define A ((3))
     //
     private Item createConstant() {
-        var name = pollExpect(Token.TokenType.IDENTIFIER);
+        Token name = pollExpect(Token.TokenType.IDENTIFIER);
         int brackets = 0;
 
         while(Token.TokenType.LEFT_PARENTHESIS == peek().getType()) {
@@ -83,7 +83,7 @@ public class Parser {
             return null;
         }
 
-        var def = pollExpect(Token.TokenType.IDENTIFIER);
+        Token def = pollExpect(Token.TokenType.IDENTIFIER);
 
         while(brackets > 0){
             pollExpect(Token.TokenType.RIGHT_PARENTHESIS);
@@ -317,7 +317,7 @@ public class Parser {
         List<EnumItem.EnumField> fields = new ArrayList<>();
 
         skipWhitespace();
-        var enumIdentifier = pollExpect(Token.TokenType.IDENTIFIER);
+        Token enumIdentifier = pollExpect(Token.TokenType.IDENTIFIER);
         skipWhitespace();
         pollExpect(Token.TokenType.OPEN_BRACKET);
         lastComment = null;
@@ -345,7 +345,7 @@ public class Parser {
             lastComment = null;
             skipWhitespace();
         }
-        var typeNameIdentifier = pollExpect(Token.TokenType.IDENTIFIER);
+        Token typeNameIdentifier = pollExpect(Token.TokenType.IDENTIFIER);
         pollExpect(Token.TokenType.SEMICOLON);
 
         return new EnumItem(enumIdentifier.getText(), fields);
@@ -380,7 +380,7 @@ public class Parser {
     }
 
     private Token pollExpect(Token.TokenType type){
-        var token = poll();
+        Token token = poll();
 
         if(token == null || token.getType() != type){
             throw new RuntimeException("Line "+token.lineNumber+" : Expected " + type + " but found " + token);

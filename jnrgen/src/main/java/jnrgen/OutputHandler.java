@@ -8,6 +8,8 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import static java.util.Map.entry;
+
 public class OutputHandler {
 
     private final File outputDirectory;
@@ -30,13 +32,13 @@ public class OutputHandler {
             "WgpuRenderPassDescriptor",
             "WgpuSamplerDescriptor");
 
-    private static final Map<String, String> exportNames = Map.of(
-            "SURFACE_DESCRIPTOR_FROM_WINDOWS_H_W_N_D", "SURFACE_DESCRIPTOR_FROM_WINDOWS_HWND",
-            "SURFACE_DESCRIPTOR_FROM_H_T_M_L_CANVAS_ID", "SURFACE_DESCRIPTOR_FROM_HTML_CANVAS_ID",
-            "SHADER_MODULE_S_P_I_R_V_DESCRIPTOR", "SHADER_MODULE_SPIRV_DESCRIPTOR",
-            "SHADER_MODULE_W_G_S_L_DESCRIPTOR", "SHADER_MODULE_WGSL_DESCRIPTOR",
-            "WgpuRenderPassDepthStencilAttachmentDescriptorBase_TextureViewId", "WgpuRenderPassDepthStencilDescriptor",
-            "WgpuRenderPassColorAttachmentDescriptorBase_TextureViewId", "WgpuRenderPassColorDescriptor"
+    private static final Map<String, String> exportNames = Map.ofEntries(
+            Map.entry("SURFACE_DESCRIPTOR_FROM_WINDOWS_H_W_N_D", "SURFACE_DESCRIPTOR_FROM_WINDOWS_HWND"),
+            Map.entry("SURFACE_DESCRIPTOR_FROM_H_T_M_L_CANVAS_ID", "SURFACE_DESCRIPTOR_FROM_HTML_CANVAS_ID"),
+            Map.entry("SHADER_MODULE_S_P_I_R_V_DESCRIPTOR", "SHADER_MODULE_SPIRV_DESCRIPTOR"),
+            Map.entry("SHADER_MODULE_W_G_S_L_DESCRIPTOR", "SHADER_MODULE_WGSL_DESCRIPTOR"),
+            Map.entry("WgpuRenderPassDepthStencilAttachmentDescriptorBase_TextureViewId", "WgpuRenderPassDepthStencilDescriptor"),
+            Map.entry("WgpuRenderPassColorAttachmentDescriptorBase_TextureViewId", "WgpuRenderPassColorDescriptor")
     );
 
     public OutputHandler(File outputDirectory) {
@@ -44,7 +46,7 @@ public class OutputHandler {
     }
 
     public void saveConstants() throws IOException{
-        var writer = startFile("WebGPU_JNI.java");
+        BufferedWriter writer = startFile("WebGPU_JNI.java");
 
         writer.write("import jnr.ffi.Pointer;\nimport jnr.ffi.types.u_int64_t;\n");
         writer.write("import jnr.ffi.types.u_int32_t;\nimport jnr.ffi.types.size_t;\n\n");
@@ -72,7 +74,7 @@ public class OutputHandler {
     }
 
     private void saveConstantGroup(BufferedWriter writer, Map.Entry<String, List<ConstantItem>> entry) throws IOException {
-        var hasClass = !entry.getKey().isBlank();
+        boolean hasClass = !entry.getKey().isBlank();
 
         if(hasClass){
             writer.write("    public static final class ");
@@ -102,7 +104,7 @@ public class OutputHandler {
     public BufferedWriter startFile(String name, String... imports) throws IOException {
         File file = outputDirectory.toPath().resolve(name).toFile();
 
-        var writer = new BufferedWriter(new FileWriter(file));
+        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
         writer.write("package ");
         writer.write(packageName);
         writer.write(";\n\n");
@@ -121,7 +123,7 @@ public class OutputHandler {
     }
 
     public void runHooks(Item item) {
-        var hook = hooks.get(item.getJavaTypeName());
+        Consumer<Item> hook = hooks.get(item.getJavaTypeName());
 
         if(hook != null)
             hook.accept(item);
@@ -139,7 +141,7 @@ public class OutputHandler {
         if(constants.containsKey(associatedType)){
             constants.get(associatedType).add(item);
         }else{
-            var list = new ArrayList<ConstantItem>();
+            ArrayList<ConstantItem> list = new ArrayList<ConstantItem>();
             list.add(item);
 
             constants.put(associatedType, list);

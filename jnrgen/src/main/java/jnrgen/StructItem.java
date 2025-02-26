@@ -42,7 +42,7 @@ public class StructItem implements Item {
             return;
         }
 
-        var writer = outputHandler.startFile(name + ".java",
+        BufferedWriter writer = outputHandler.startFile(name + ".java",
                 "com.monstrous.utils.JavaWebGPU",
                 "com.monstrous.utils.CStrPointer",
                 "com.monstrous.utils.WgpuJavaStruct",
@@ -141,7 +141,7 @@ public class StructItem implements Item {
                     if(item instanceof EnumItem){
                         type = "Struct.Pointer";
                     } else {
-                        var type = item.getJavaTypeName();
+                        String type = item.getJavaTypeName();
 
                         this.type = "DynamicStructRef<" + type + ">";
                         this.createType = "new DynamicStructRef<>(" + type + ".class);";

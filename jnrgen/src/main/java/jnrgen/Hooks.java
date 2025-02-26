@@ -20,8 +20,8 @@ public class Hooks {
     public static void bindGroupEntryPadding(Item item){
         if(!(item instanceof StructItem))
             throw new RuntimeException("Expected struct, found " + item);
-        var struct = (StructItem) item;
-        var padding = new StructItem.StructField("uint32_t", StructItem.doNotUsePrefix + "padding", false);
+        StructItem struct = (StructItem) item;
+        StructItem.StructField padding = new StructItem.StructField("uint32_t", StructItem.doNotUsePrefix + "padding", false);
 
         struct.getFields().add(1, padding);
     }

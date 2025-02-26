@@ -133,7 +133,7 @@ to your build.gradle file:
     }
     
     dependencies {
-        implementation 'com.github.MonstrousSoftware:Java-to-WebGPU:1.0'
+        implementation 'com.github.MonstrousSoftware:Java-to-WebGPU:-SNAPSHOT'
     }
 ```
 

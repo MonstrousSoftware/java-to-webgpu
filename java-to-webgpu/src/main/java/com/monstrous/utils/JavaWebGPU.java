@@ -180,7 +180,7 @@ public class JavaWebGPU {
      * @see ByteBuffer#allocateDirect(int)
      */
     public static Pointer createByteArrayPointer(byte[] bytes){
-        var dataBuffer = ByteBuffer.allocateDirect(bytes.length).put(bytes);
+        ByteBuffer dataBuffer = ByteBuffer.allocateDirect(bytes.length).put(bytes);
         dataBuffer.rewind();
 
         return JavaWebGPU.createByteBufferPointer(dataBuffer);

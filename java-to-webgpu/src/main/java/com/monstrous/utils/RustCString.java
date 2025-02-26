@@ -3,6 +3,7 @@ package com.monstrous.utils;
 import jnr.ffi.Pointer;
 
 import java.io.ByteArrayOutputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
@@ -27,7 +28,11 @@ public class RustCString {
             stream.write(nextChar);
         }
 
-        return stream.toString(StandardCharsets.US_ASCII);
+        try {
+            return stream.toString("US-ASCII");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

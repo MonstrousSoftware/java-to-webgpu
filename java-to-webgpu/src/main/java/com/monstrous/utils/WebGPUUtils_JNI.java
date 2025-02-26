@@ -1,6 +1,7 @@
 package com.monstrous.utils;
 
 
+
 import com.monstrous.webgpu.WGPUDeviceDescriptor;
 import com.monstrous.webgpu.WGPURequestAdapterOptions;
 import jnr.ffi.Pointer;

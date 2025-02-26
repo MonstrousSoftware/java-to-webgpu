@@ -137,11 +137,6 @@ public class FunctionItem implements Item {
 
     public static String convertParamType(OutputHandler handler, FunctionParameter param) {
 
-        boolean ok = true;
-        if(param.type.startsWith("WGPUSupportedLimits"))
-            ok = false;
-
-
         // we don't want the asterisk on the name but as part of the type
         // the parser may get it wrong depending on input formatting
         if(param.name.startsWith("*")){

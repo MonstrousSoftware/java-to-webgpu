@@ -36,7 +36,6 @@ public class EnumItem implements Item {
 
         if(!checkFields()){
             this.contiguous = false;
-            //System.out.println("Warning: Non-contiguous range for "+name);
 
             //writer.write("import jnr.ffi.util.EnumMapper;\n\n");
             writer.write("public class ");
@@ -44,21 +43,6 @@ public class EnumItem implements Item {
             writer.write(" {\n");
 
             saveConstants(writer);
-
-
-//            writer.write("import jnr.ffi.util.EnumMapper;\n\n");
-//            writer.write("public enum ");
-//            writer.write(className);
-//            writer.write(" implements EnumMapper.IntegerEnum {\n");
-//
-//            saveValuedFields(writer);
-//
-//            writer.write("\n\tprivate final int value;\n");
-//            writer.write("\n\t");
-//            writer.write(className);
-//            writer.write("(int value) {this.value = value;}\n");
-//            writer.write("\n\t@Override\n");
-//            writer.write("\tpublic int intValue() {return value;} // mapping function\n");
         }
         else {
             writer.write("public enum ");

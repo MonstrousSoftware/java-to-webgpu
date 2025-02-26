@@ -43,7 +43,7 @@ public class StructItem implements Item {
         }
 
         var writer = outputHandler.startFile(name + ".java",
-                "com.monstrous.utils.WgpuJava",
+                "com.monstrous.utils.JavaWebGPU",
                 "com.monstrous.utils.CStrPointer",
                 "com.monstrous.utils.WgpuJavaStruct",
                 "com.monstrous.utils.RustCString",
@@ -96,7 +96,9 @@ public class StructItem implements Item {
         writer.write(createDirectJavadoc);
         writer.write("    public static ");
         writer.write(name);
-        writer.write(" createDirect(){\n        var struct = new ");
+        writer.write(" createDirect(){\n        ");
+        writer.write(name);
+        writer.write(" struct = new ");
         writer.write(name);
         writer.write("();\n        struct.useDirectMemory();\n        return struct;\n    }\n\n");
 
@@ -288,7 +290,7 @@ public class StructItem implements Item {
             writer.write(" x){\n        if(x.length == 0 || x[0] == null){\n");
             writer.write("            this.");
             writer.write(name);
-            writer.write(".set(WgpuJava.createNullPointer());\n        } else {\n            this.");
+            writer.write(".set(JavaWebGPU.createNullPointer());\n        } else {\n            this.");
             writer.write(name);
             writer.write(".set(x);\n        }\n    }\n\n");
         }

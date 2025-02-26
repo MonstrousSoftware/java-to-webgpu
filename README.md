@@ -123,5 +123,20 @@ This library makes use of [JNR-FFI](https://github.com/jnr/jnr-ffi) to call nati
 The demo makes use of [LWJGL3](https://github.com/LWJGL/lwjgl3) to create a window which in turn uses [GLFW](https://www.glfw.org/).
 
 
+## How to use the library in your own projects
 
+The library is available via jitpack.io. To include it in your project add the following lines
+to your build.gradle file:
 
+```groovy
+    repositories {
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+    }
+    
+    dependencies {
+        implementation 'com.github.MonstrousSoftware:Java-to-WebGPU:1.0'
+    }
+```
+
+[![](https://jitpack.io/v/MonstrousSoftware/Java-to-WebGPU.svg)](https://jitpack.io/#MonstrousSoftware/Java-to-WebGPU)

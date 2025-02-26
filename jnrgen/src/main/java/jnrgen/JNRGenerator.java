@@ -9,7 +9,7 @@ import java.util.List;
 public class JNRGenerator {
 
     public static String inputFile = "/dawn2.h";
-    public static String outputDir = "./src/generated";
+    public static String outputDir = "../java-to-webgpu/src/main/java/com/monstrous/webgpu";
 
     public static void main(String[] args) {
 
@@ -86,7 +86,7 @@ public class JNRGenerator {
     }
 
     private static File createOutputDirectory(String arg){
-        File file = new File(arg + "/jnr-gen/");
+        File file = new File(arg);
         System.out.println("Output Directory: " + file);
 
         if(file.exists()){

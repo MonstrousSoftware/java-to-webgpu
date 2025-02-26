@@ -25,7 +25,7 @@
 #include <iostream>
 #include <stdalign.h>
 
-#define LOG(x) x
+#define LOG(x)
 
 using namespace std;
 

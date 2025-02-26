@@ -79,7 +79,7 @@ public class JNRGenerator {
         }
 
         try {
-            return new String(headerStream.readAllBytes(), StandardCharsets.UTF_8);
+            return new String(headerStream.readNBytes(Integer.MAX_VALUE), StandardCharsets.UTF_8);
         } catch(IOException e) {
             throw new RuntimeException("Failed to read");
         }

@@ -1,5 +1,6 @@
 package jnrgen;
 
+import java.util.AbstractMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -9,8 +10,8 @@ import java.util.function.Consumer;
  */
 public class Hooks {
 
-    private static final Map<String, Consumer<Item>> hooks = Map.of(
-            "WgpuBindGroupEntry", Hooks::bindGroupEntryPadding
+    private static final Map<String, Consumer<Item>> hooks = Map.ofEntries(
+            new AbstractMap.SimpleEntry<>("WgpuBindGroupEntry", Hooks::bindGroupEntryPadding)
     );
 
     public static void preSave(OutputHandler handler){

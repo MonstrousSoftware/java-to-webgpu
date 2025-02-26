@@ -33,12 +33,12 @@ public class OutputHandler {
             "WgpuSamplerDescriptor");
 
     private static final Map<String, String> exportNames = Map.ofEntries(
-            Map.entry("SURFACE_DESCRIPTOR_FROM_WINDOWS_H_W_N_D", "SURFACE_DESCRIPTOR_FROM_WINDOWS_HWND"),
-            Map.entry("SURFACE_DESCRIPTOR_FROM_H_T_M_L_CANVAS_ID", "SURFACE_DESCRIPTOR_FROM_HTML_CANVAS_ID"),
-            Map.entry("SHADER_MODULE_S_P_I_R_V_DESCRIPTOR", "SHADER_MODULE_SPIRV_DESCRIPTOR"),
-            Map.entry("SHADER_MODULE_W_G_S_L_DESCRIPTOR", "SHADER_MODULE_WGSL_DESCRIPTOR"),
-            Map.entry("WgpuRenderPassDepthStencilAttachmentDescriptorBase_TextureViewId", "WgpuRenderPassDepthStencilDescriptor"),
-            Map.entry("WgpuRenderPassColorAttachmentDescriptorBase_TextureViewId", "WgpuRenderPassColorDescriptor")
+            new AbstractMap.SimpleEntry<>("SURFACE_DESCRIPTOR_FROM_WINDOWS_H_W_N_D", "SURFACE_DESCRIPTOR_FROM_WINDOWS_HWND"),
+            new AbstractMap.SimpleEntry<>("SURFACE_DESCRIPTOR_FROM_H_T_M_L_CANVAS_ID", "SURFACE_DESCRIPTOR_FROM_HTML_CANVAS_ID"),
+            new AbstractMap.SimpleEntry<>("SHADER_MODULE_S_P_I_R_V_DESCRIPTOR", "SHADER_MODULE_SPIRV_DESCRIPTOR"),
+            new AbstractMap.SimpleEntry<>("SHADER_MODULE_W_G_S_L_DESCRIPTOR", "SHADER_MODULE_WGSL_DESCRIPTOR"),
+            new AbstractMap.SimpleEntry<>("WgpuRenderPassDepthStencilAttachmentDescriptorBase_TextureViewId", "WgpuRenderPassDepthStencilDescriptor"),
+            new AbstractMap.SimpleEntry<>("WgpuRenderPassColorAttachmentDescriptorBase_TextureViewId", "WgpuRenderPassColorDescriptor")
     );
 
     public OutputHandler(File outputDirectory) {
@@ -74,7 +74,7 @@ public class OutputHandler {
     }
 
     private void saveConstantGroup(BufferedWriter writer, Map.Entry<String, List<ConstantItem>> entry) throws IOException {
-        boolean hasClass = !entry.getKey().isBlank();
+        boolean hasClass = (entry.getKey().length() > 0);
 
         if(hasClass){
             writer.write("    public static final class ");

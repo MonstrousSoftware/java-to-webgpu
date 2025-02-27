@@ -62,12 +62,14 @@ public class FunctionItem implements Item {
         String name;
         boolean inParam;    // can we add @In? e.g. a const *
         boolean outParam;
+        boolean nullable;
 
         public FunctionParameter(String type, String name) {
             this.type = type;
             this.name = name;
             inParam = false;
             outParam = false;
+            nullable = false;
         }
     }
 
@@ -100,6 +102,8 @@ public class FunctionItem implements Item {
             if(!first)
                 writer.write(", ");
             first = false;
+            if(parm.nullable)
+                writer.write("@Nullable ");
             writer.write(convertParamType(handler, parm));
             writer.write(" ");
             writer.write(parm.name);

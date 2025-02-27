@@ -49,9 +49,9 @@ public class OutputHandler {
         BufferedWriter writer = startFile("WebGPU_JNI.java");
 
         writer.write("import jnr.ffi.Pointer;\nimport jnr.ffi.types.u_int64_t;\n");
-        writer.write("import jnr.ffi.types.u_int32_t;\nimport jnr.ffi.types.size_t;\n\n");
-
-        writer.write("public interface WebGPU_JNI {\n\n");
+        writer.write("import jnr.ffi.types.u_int32_t;\nimport jnr.ffi.types.size_t;\n");
+        writer.write("import org.jetbrains.annotations.Nullable;\n");
+        writer.write("\npublic interface WebGPU_JNI {\n\n");
 
 //        writer.write("// constants\n\n");
 //        for(var entry : constants.entrySet()){

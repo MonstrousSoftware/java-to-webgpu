@@ -14,6 +14,7 @@ repositories {
 
 dependencies {
     implementation 'com.github.jnr:jnr-ffi:2.2.17'
+    implementation 'org.jetbrains:annotations:24.0.0'
 }
 
 publishing {

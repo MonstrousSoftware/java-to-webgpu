@@ -93,12 +93,14 @@ public class Scanner {
                 if(isIdentifierCharacter(c)){
                     String text = readIdentifier(c);
 
+                    if(text.contentEquals("WGPU_NULLABLE"))
+                        return new Token(line, Token.TokenType.NULLABLE);
+
                     // hacky
                     if(text.contentEquals("WGPU_EXPORT")||
                         text.contentEquals("WGPU_STRUCTURE_ATTRIBUTE")||
                         text.contentEquals("WGPU_FUNCTION_ATTRIBUTE")||
-                        text.contentEquals("WGPU_ENUM_ATTRIBUTE")||
-                        text.contentEquals("WGPU_NULLABLE"))
+                        text.contentEquals("WGPU_ENUM_ATTRIBUTE"))
                         return null;
 
                     return Token.identifier(line, text);

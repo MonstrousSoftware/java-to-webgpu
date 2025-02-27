@@ -48,7 +48,8 @@ public class StructItem implements Item {
                 "com.monstrous.utils.WgpuJavaStruct",
                 "com.monstrous.utils.RustCString",
                 "jnr.ffi.Runtime",
-                "jnr.ffi.Struct");
+                "jnr.ffi.Struct",
+                "org.jetbrains.annotations.Nullable");
 
         writer.write("public class ");
         writer.write(name);
@@ -118,15 +119,17 @@ public class StructItem implements Item {
     static public class StructField {
         private String name;
         private String type;
+        private boolean nullable;
         private String createType;
 
-        public StructField(String type, String name) {
-            this(type, name, true);
-        }
+//        public StructField(String type, String name) {
+//            this(type, name, true);
+//        }
 
-        public StructField(String type, String name, boolean convertCase) {
+        public StructField(String type, String name, boolean nullable) {
             this.name = name; //convertCase ? toCamelCase(name) : name;
             this.type = type;
+            this.nullable = nullable;
         }
 
         public void convertTypes(OutputHandler handler) {
@@ -203,6 +206,8 @@ public class StructItem implements Item {
 
         private void writeDeclaration(BufferedWriter writer) throws IOException {
             writer.write("    private final ");
+            if(nullable)
+                writer.write("@Nullable ");
             writer.write(type);
             writer.write(" ");
             writer.write(name);

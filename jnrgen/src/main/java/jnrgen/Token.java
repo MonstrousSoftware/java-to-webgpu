@@ -25,6 +25,7 @@ public class Token {
         NEWLINE,
         STRING,
         EOF,
+        NULLABLE,
     }
 
     private final TokenType type;

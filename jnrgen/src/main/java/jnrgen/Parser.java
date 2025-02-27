@@ -143,10 +143,17 @@ public class Parser {
         skipWhitespace();
 
         while(!new Token(0, Token.TokenType.CLOSE_BRACKET).equals(peek())){
+            boolean nullable = false;
+
             if(Token.identifier(0,"const").equals(peek())){
                 poll();
             }
 
+            if(peek().getType() == Token.TokenType.NULLABLE){ // nullable param
+                // e.g.  WGPUInstance wgpuCreateInstance(WGPU_NULLABLE WGPUInstanceDescriptor const * descriptor)
+                nullable = true;
+                poll();
+            }
 
             if(Token.identifier(0,"union").equals(peek())){
                 return null; //Unions in structs currently not supported
@@ -176,7 +183,7 @@ public class Parser {
             pollExpect(Token.TokenType.SEMICOLON);
             skipWhitespace();
 
-            fields.add(new StructItem.StructField(fieldType.getText(), fieldName.getText()));
+            fields.add(new StructItem.StructField(fieldType.getText(), fieldName.getText(), nullable));
         }
 
         pollExpect(Token.TokenType.CLOSE_BRACKET);
@@ -263,8 +270,15 @@ public class Parser {
 
         while(!new Token(0, Token.TokenType.RIGHT_PARENTHESIS).equals(peek())){
             boolean hasConst = false;
+            boolean nullable = false;
 
             if(Token.identifier(0,"const").equals(peek())){ // ignore const
+                poll();
+            }
+
+            if(peek().getType() == Token.TokenType.NULLABLE){ // nullable param
+                // e.g.  WGPUInstance wgpuCreateInstance(WGPU_NULLABLE WGPUInstanceDescriptor const * descriptor)
+                nullable = true;
                 poll();
             }
 
@@ -296,6 +310,7 @@ public class Parser {
             FunctionItem.FunctionParameter param = new FunctionItem.FunctionParameter(paramType.getText(), paramName.getText());
             if(hasConst)
                 param.inParam = true;
+            param.nullable = nullable;
             params.add( param );
 
             Token tok = peek();

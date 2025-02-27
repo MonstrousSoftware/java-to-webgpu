@@ -186,19 +186,17 @@ public class HelloTriangle {
     private void initSwapChain(int width, int height){
         // configure the surface
         WGPUSurfaceConfiguration config = WGPUSurfaceConfiguration.createDirect();
-        config.setNextInChain();
+        config.setNextInChain()
+                .setWidth(width)
+                .setHeight(height)
+                .setFormat(surfaceFormat)
+                .setViewFormatCount(0)
+                .setViewFormats(JavaWebGPU.createNullPointer())
+                .setUsage(WGPUTextureUsage.RenderAttachment)
+                .setDevice(device)
+                .setPresentMode(vsyncEnabled ? WGPUPresentMode.Fifo : WGPUPresentMode.Immediate)
+                .setAlphaMode(WGPUCompositeAlphaMode.Auto);
 
-        config.setWidth(width);
-        config.setHeight(height);
-
-        config.setFormat(surfaceFormat);
-        // And we do not need any particular view format:
-        config.setViewFormatCount(0);
-        config.setViewFormats(JavaWebGPU.createNullPointer());
-        config.setUsage(WGPUTextureUsage.RenderAttachment);
-        config.setDevice(device);
-        config.setPresentMode(vsyncEnabled ? WGPUPresentMode.Fifo : WGPUPresentMode.Immediate);
-        config.setAlphaMode(WGPUCompositeAlphaMode.Auto);
 
         webGPU.wgpuSurfaceConfigure(surface, config);
     }

@@ -64,7 +64,7 @@ public class StructItem implements Item {
         for (StructField field : fields) {
             if (!field.name.startsWith(doNotUsePrefix)) {
                 field.writeGetter(writer, outputHandler);
-                field.writeSetter(writer, outputHandler);
+                field.writeSetter(writer, name, outputHandler);
             }
         }
 
@@ -259,30 +259,34 @@ public class StructItem implements Item {
             writer.write(";\n    }\n\n");
         }
 
-        public void writeSetter(BufferedWriter writer, OutputHandler handler) throws IOException {
+        public void writeSetter(BufferedWriter writer, String className, OutputHandler handler) throws IOException {
             if (type.startsWith("@CStrPointer")) {
-                writeStringSetter(writer);
+                writeStringSetter(writer, className);
                 return;
             } else if (type.startsWith("DynamicStructRef")) {
-                writeStructRefSetter(writer, handler);
+                writeStructRefSetter(writer, className, handler);
                 return;
             } else if (!type.startsWith("Struct.")) {
                 //Must be an inner struct
                 return;
             }
 
-            writer.write("    public void set");
+            writer.write("    public ");
+            writer.write(className);
+            writer.write(" set");
             writer.write(name.substring(0, 1).toUpperCase());
             writer.write(name.substring(1));
             writer.write("(");
             writer.write(getGetterSetterType(type, handler, false));
-            writer.write(" x){\n        this.");
+            writer.write(" val){\n        this.");
             writer.write(name);
-            writer.write(".set(x);\n    }\n\n");
+            writer.write(".set(val); return this;\n    }\n\n");
         }
 
-        private void writeStructRefSetter(BufferedWriter writer, OutputHandler handler) throws IOException {
-            writer.write("    public void set");
+        private void writeStructRefSetter(BufferedWriter writer, String className, OutputHandler handler) throws IOException {
+            writer.write("    public ");
+            writer.write(className);
+            writer.write(" set");
             writer.write(name.substring(0, 1).toUpperCase());
             writer.write(name.substring(1));
             writer.write("(");
@@ -292,16 +296,18 @@ public class StructItem implements Item {
             writer.write(name);
             writer.write(".set(JavaWebGPU.createNullPointer());\n        } else {\n            this.");
             writer.write(name);
-            writer.write(".set(x);\n        }\n    }\n\n");
+            writer.write(".set(x);\n        }\n        return this;\n    }\n\n");
         }
 
-        private void writeStringSetter(BufferedWriter writer) throws IOException {
-            writer.write("    public void set");
+        private void writeStringSetter(BufferedWriter writer, String className) throws IOException {
+            writer.write("    public ");
+            writer.write(className);
+            writer.write(" set");
             writer.write(name.substring(0, 1).toUpperCase());
             writer.write(name.substring(1));
-            writer.write("(java.lang.String x){\n        this.");
+            writer.write("(java.lang.String str){\n        this.");
             writer.write(name);
-            writer.write(".set(RustCString.toPointer(x));\n    }\n\n");
+            writer.write(".set(RustCString.toPointer(str)); return this;\n    }\n\n");
         }
 
         private void writeStringGetter(BufferedWriter writer) throws IOException {

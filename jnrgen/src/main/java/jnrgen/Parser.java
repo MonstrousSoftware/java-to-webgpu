@@ -209,7 +209,7 @@ public class Parser {
 
         pollExpect(Token.TokenType.SEMICOLON);
 
-        return new FunctionItem(returnType.getText(), false, functionName.getText(), params);
+        return new FunctionItem(returnType.getText(), false, functionName.getText(), params, getLastCommentOrEmpty());
     }
 
 
@@ -251,7 +251,7 @@ public class Parser {
 
         // callbacks are kept as FunctionItems
         // remove the * at the start of the name
-        return new FunctionItem(returnType.getText(), true, functionName.getText().substring(1), params);
+        return new FunctionItem(returnType.getText(), true, functionName.getText().substring(1), params, getLastCommentOrEmpty());
     }
 
     // parse "( int a, void * ptr )"

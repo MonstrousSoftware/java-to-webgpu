@@ -3777,10 +3777,6 @@ typedef void (*WGPUProcTextureViewAddRef)(WGPUTextureView textureView) WGPU_FUNC
 typedef void (*WGPUProcTextureViewRelease)(WGPUTextureView textureView) WGPU_FUNCTION_ATTRIBUTE;
 
 
-//#endif  // !defined(WGPU_SKIP_PROCS)
-//
-//#if !defined(WGPU_SKIP_DECLARATIONS)
-
 
 WGPU_EXPORT void wgpuAdapterInfoFreeMembers(WGPUAdapterInfo value) WGPU_FUNCTION_ATTRIBUTE;
 WGPU_EXPORT void wgpuAdapterPropertiesFreeMembers(WGPUAdapterProperties value) WGPU_FUNCTION_ATTRIBUTE;

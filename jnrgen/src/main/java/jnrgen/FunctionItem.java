@@ -7,6 +7,7 @@ import java.util.List;
 
 public class FunctionItem implements Item {
 
+    private final String comment;
     private final String returnType;
     public boolean isCallback;
     private final String name;
@@ -70,10 +71,11 @@ public class FunctionItem implements Item {
         }
     }
 
-    public FunctionItem(String returnType, boolean isCallback, String name, List<FunctionParameter> fields) {
+    public FunctionItem(String returnType, boolean isCallback, String name, List<FunctionParameter> fields, String comment) {
         this.returnType = returnType;
         this.isCallback = isCallback;
         this.name = OutputHandler.toExportName(name); //.replace("WGPU", "Wgpu"));
+        this.comment = comment;
         this.params = fields;
     }
 
@@ -81,6 +83,11 @@ public class FunctionItem implements Item {
     public void write(OutputHandler handler, BufferedWriter writer) throws IOException {
         if(isCallback)  // these don't go in the function list
             return;
+
+        if(!comment.isEmpty()){
+            writer.write("\n\t"+comment.replace("\n", "\n\t"));
+            writer.write("\n");
+        }
 
         writer.write("\t");
         writer.write(convertReturnType(handler, returnType));

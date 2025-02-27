@@ -1,9 +1,5 @@
 package com.monstrous.utils;
 
-
-
-import com.monstrous.webgpu.WGPUDeviceDescriptor;
-import com.monstrous.webgpu.WGPURequestAdapterOptions;
 import jnr.ffi.Pointer;
 
 /**
@@ -16,6 +12,9 @@ public interface WebGPUUtils_JNI {
      */
     Pointer glfwGetWGPUSurface(Pointer instance, long HWND);
 
-    Pointer RequestAdapterSync(Pointer instance, WGPURequestAdapterOptions options);
-    Pointer RequestDeviceSync(Pointer adapter, WGPUDeviceDescriptor descriptor);
+    /**
+     * Image file handling
+     */
+    Pointer gdx2d_load (Pointer buffer, int len);
+    void gdx2d_free(Pointer pixmapInfo);
 }

@@ -116,6 +116,34 @@ public class HelloTriangle {
     }
 
 
+    private Pointer getAdapterSync(Pointer instance, WGPURequestAdapterOptions options){
+
+        Pointer userBuf = JavaWebGPU.createLongArrayPointer(new long[1]);
+        WGPURequestAdapterCallback callback = (WGPURequestAdapterStatus status, Pointer adapter, String message, Pointer userdata) -> {
+            if(status == WGPURequestAdapterStatus.Success)
+                userdata.putPointer(0, adapter);
+            else
+                System.out.println("Could not get adapter: "+message);
+        };
+        webGPU.wgpuInstanceRequestAdapter(instance, options, callback, userBuf);
+        // on native implementations, we don't have to wait for asynchronous operation. It returns result immediately.
+        return  userBuf.getPointer(0);
+    }
+
+    private Pointer getDeviceSync(Pointer adapter, WGPUDeviceDescriptor deviceDescriptor){
+
+        Pointer userBuf = JavaWebGPU.createLongArrayPointer(new long[1]);
+        WGPURequestDeviceCallback callback = (WGPURequestDeviceStatus status, Pointer device, String message, Pointer userdata) -> {
+            if(status == WGPURequestDeviceStatus.Success)
+                userdata.putPointer(0, device);
+            else
+                System.out.println("Could not get device: "+message);
+        };
+        webGPU.wgpuAdapterRequestDevice(adapter, deviceDescriptor, callback, userBuf);
+        // on native implementations, we don't have to wait for asynchronous operation. It returns result immediately.
+        return  userBuf.getPointer(0);
+    }
+
     private Pointer initDevice( Pointer instance) {
 
         // Select an Adapter
@@ -127,7 +155,8 @@ public class HelloTriangle {
         options.setPowerPreference(WGPUPowerPreference.HighPerformance);
 
         // Get Adapter
-        Pointer adapter = JavaWebGPU.getUtils().RequestAdapterSync(instance,  options);
+
+        Pointer adapter = getAdapterSync(instance, options);
 
         // Get Adapter properties out of interest
         WGPUAdapterProperties adapterProperties = WGPUAdapterProperties.createDirect();
@@ -154,15 +183,7 @@ public class HelloTriangle {
         deviceDescriptor.setRequiredFeatureCount(0);
         deviceDescriptor.setRequiredFeatures(JavaWebGPU.createNullPointer());
 
-        Pointer device = JavaWebGPU.getUtils().RequestDeviceSync(adapter, deviceDescriptor);
-
-//        // use a lambda expression to define a callback function
-//        WGPURequestDeviceCallback requestDeviceCallback = (WGPUErrorType type, String message, Pointer userdata) -> {
-//            System.out.println("*** Device error: " + type + " : " + message);
-//            System.exit(-1);
-//        };
-//
-//        webGPU.wgpuAdapterRequestDevice(adapter, deviceDescriptor, requestDeviceCallback, userData);
+        Pointer device = getDeviceSync(adapter, deviceDescriptor);
 
         // use a lambda expression to define a callback function
         WGPUErrorCallback deviceCallback = (WGPUErrorType type, String message, Pointer userdata) -> {

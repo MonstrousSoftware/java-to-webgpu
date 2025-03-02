@@ -181,7 +181,8 @@ public class StructItem implements Item {
             } else if (handler.containsAlias(type)) {
                 type = handler.getAlias(type);
                 convertTypes(handler);
-            } else if(handler.containsCallback(type)) {
+            }
+            else if(handler.containsCallback(type)) {
                 type = "Struct.Pointer";
             } else {
                 throw new RuntimeException("unknown type: " + this.type);
@@ -355,6 +356,9 @@ public class StructItem implements Item {
 
                 return isGetter ? type : javaType + "...";
             }
+//            else if(handler.containsCallback(type)) {
+//                return type;
+//            }
 
             throw new RuntimeException("Unable to create getter/setter type for " + type);
         }

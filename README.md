@@ -31,7 +31,7 @@ The native utility library can be accessed through `JavaWebGPU.getUtils()` as in
 ```java
     surface = JavaWebGPU.getUtils().glfwGetWGPUSurface(instance, windowHandle);
 ```
-This utility library provide asynchronous methods to obtain an Adapter and a Device and a method to get a WGPUSurface from a GLFW window.
+This utility library provides a method to get a WGPUSurface from a GLFW window and a method to read an image file.
 
 
 ## Modules

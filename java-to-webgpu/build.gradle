@@ -14,6 +14,7 @@ repositories {
 // add sources jar to artifacts
 java {
     withSourcesJar()
+    //withJavadocJar()
 }
 
 dependencies {
@@ -24,10 +25,11 @@ dependencies {
 publishing {
     publications {
         maven(MavenPublication) {
-            groupId  'com.github.MonstrousSoftware'
-            artifactId  = 'java-to-webgpu'
-            version  "1.0.0"
+            groupId 'com.github.MonstrousSoftware'
+            artifactId 'java-to-webgpu'
+            version "1.0.0"
             from components.java
+
         }
     }
 }

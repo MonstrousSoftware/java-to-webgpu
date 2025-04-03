@@ -52,10 +52,11 @@ etcetera, is represented by a Pointer object.  Don't think of this as a pointer 
 
 In the C++ code there are different types defined for the different resources such as WGPUAdapter, WGPUDevice, etc. which helps keep the code more readable, but Java does not support the typedef mechanism for this.  
 
-## Creating structures
-Many WebGPU functions rely on a descriptor parameter to pass the relevant options, instead of using individual function parameters. So a regular pattern, you will encounter is to create a descriptor object of some particular type, fill all its content and then pass it to the function you want to call.
+### Creating structures
+Many WebGPU functions rely on a single descriptor parameter to pass the relevant options, instead of using lots of individual function parameters. 
+So a regular pattern you will encounter is to create a descriptor object of some particular type, fill all its content and then pass it to the function you want to call.
 
-In C++ it is very easy to create and fill a descriptor object:
+In C++ it is very easy to create and fill a descriptor which is defined as a C struct:
 
 ```C
  	// Configure the surface

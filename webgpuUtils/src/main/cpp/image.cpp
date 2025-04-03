@@ -16,16 +16,16 @@ EXPORT gdx2d_pixmap* gdx2d_load(const unsigned char *buffer, uint32_t len) {
 
 	//printf("gdx2d_load: len = %d\n", len);
 
-	if(stbi_is_hdr_from_memory(buffer, len)){
-	    //printf("gdx2d_load: is hdr\n");
-	    // cast float * to unsigned char *
-        pixels = (unsigned char*) stbi_loadf_from_memory(buffer, len, &width, &height, &format, 4);  // force 4 components: RGBA
-        format = GDX2D_FORMAT_HDR;
-	}
-	else {
+//	if(stbi_is_hdr_from_memory(buffer, len)){
+//	    //printf("gdx2d_load: is hdr\n");
+//	    // cast float * to unsigned char *
+//        pixels = (unsigned char*) stbi_loadf_from_memory(buffer, len, &width, &height, &format, 4);  // force 4 components: RGBA
+//        format = GDX2D_FORMAT_HDR;
+//	}
+//	else {
 	    //printf("gdx2d_load: is not hdr\n");
 	    pixels = stbi_load_from_memory(buffer, len, &width, &height, &format, 4);  // force 4 components: RGBA
-	}
+//	}
 	if (pixels == NULL){
 	    //printf("gdx2d_load: load error\n");
 		return NULL;

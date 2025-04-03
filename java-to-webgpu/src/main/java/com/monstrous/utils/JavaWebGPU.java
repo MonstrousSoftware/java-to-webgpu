@@ -24,6 +24,7 @@ public class JavaWebGPU {
         // fix the name and reuse the DLL between runs.  PR https://github.com/jnr/jffi/pull/99
         //
         System.setProperty("jffi.extract.name", "jffi.dll");
+        System.out.println("init WebGPU JNI v1.0");
 
         // Copy the shared libraries from the JAR file to a temp directory for loading.
         String path = findTempDir();

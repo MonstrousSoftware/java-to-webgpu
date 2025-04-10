@@ -2,7 +2,7 @@ plugins {
     id 'cpp-library'
 }
 
-version = '1.0'
+version = '1.0.1'
 
 // Set the target operating system and architecture for this library
 library {

@@ -1,10 +1,16 @@
+/*
+* Wrapper around stb_image single header library to make a few functions available via JNI.
+*/
+
+
 
 #include "image.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -14,18 +20,7 @@ EXPORT gdx2d_pixmap* gdx2d_load(const unsigned char *buffer, uint32_t len) {
 	int32_t width, height, format;
 	unsigned char* pixels;
 
-	//printf("gdx2d_load: len = %d\n", len);
-
-//	if(stbi_is_hdr_from_memory(buffer, len)){
-//	    //printf("gdx2d_load: is hdr\n");
-//	    // cast float * to unsigned char *
-//        pixels = (unsigned char*) stbi_loadf_from_memory(buffer, len, &width, &height, &format, 4);  // force 4 components: RGBA
-//        format = GDX2D_FORMAT_HDR;
-//	}
-//	else {
-	    //printf("gdx2d_load: is not hdr\n");
-	    pixels = stbi_load_from_memory(buffer, len, &width, &height, &format, 4);  // force 4 components: RGBA
-//	}
+    pixels = stbi_load_from_memory(buffer, len, &width, &height, &format, 4);  // force 4 components: RGBA
 	if (pixels == NULL){
 	    //printf("gdx2d_load: load error\n");
 		return NULL;
@@ -48,6 +43,11 @@ EXPORT gdx2d_pixmap* gdx2d_load(const unsigned char *buffer, uint32_t len) {
 EXPORT void gdx2d_free(const gdx2d_pixmap* pixmap) {
 	free((void*)pixmap->pixels);
 	free((void*)pixmap);
+}
+
+
+EXPORT int write_png(char const *filename, int w, int h, int numComponents, const void  *data, int stride_in_bytes){
+    return stbi_write_png(filename, w, h, numComponents, data, stride_in_bytes);
 }
 
 

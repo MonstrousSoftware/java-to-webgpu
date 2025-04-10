@@ -19,6 +19,7 @@ package com.monstrous;
 import com.monstrous.webgpu.*;
 import com.monstrous.utils.JavaWebGPU;
 import jnr.ffi.Pointer;
+import org.lwjgl.Version;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -100,6 +101,7 @@ public class HelloTriangle {
 
     private void initWebGPU(long windowHandle) {
         webGPU = JavaWebGPU.init();
+        System.out.println( JavaWebGPU.getVersionString() );
 
         Pointer instance = webGPU.wgpuCreateInstance(null);
 

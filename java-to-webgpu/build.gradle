@@ -27,7 +27,7 @@ publishing {
         maven(MavenPublication) {
             groupId 'com.github.MonstrousSoftware'
             artifactId 'java-to-webgpu'
-            version "1.0.0"
+            version "1.0.1"
             from components.java
 
         }
